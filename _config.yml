@@ -19,3 +19,6 @@ github_username:  otann
 
 # Build settings
 markdown: kramdown
+
+# Google Analytics
+analytics_id: UA-74210223-1
