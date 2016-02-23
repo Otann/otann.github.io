@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Join Clojure development today"
 date:   2016-02-23 12:57:25 +0300
 ---

@@ -13,12 +13,14 @@ description: >
   That's what gets results!
 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://otann.github.io" # the base hostname & protocol for your site
+url: "http://otann.com" # the base hostname & protocol for your site
 twitter_username: anton_otann
 github_username:  otann
 
 # Build settings
 markdown: kramdown
+
+permalink: pretty
 
 # Google Analytics
 analytics_id: UA-74210223-1
