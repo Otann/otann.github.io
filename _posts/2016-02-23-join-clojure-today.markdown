@@ -11,18 +11,58 @@ To add new posts, simply add a file in the `_posts` directory that follows the c
 Jekyll also offers powerful support for code snippets:
 
 {% highlight clojure %}
-(def base-url "https://api.wit.ai")
+(defn start!
+  "Starts long-polling process"
+  []
+  (log/debug "Trying to start polling threads")
+  (reset! updates (chan))
+  (reset! running true)
 
-(defn parse [text]
-  (let [token (cfg/get :wit-token)
-        url (str base-url "/message")
-        query {:v "20160221"
-               :q text}
-        headers {:Authorization (str "Bearer " token)}
-        response (http/get url {:as :json
-                                :query-params query
-                                :headers headers})]
-    (-> response :body :outcomes)))
+  ;; Start infinite loop inside go-routine
+  ;; that will pull messages from channel
+  (go (loop []
+        (handle (<! @updates))
+        (if @running (recur))))
+
+  ;; Start thread with polling process
+  ;; that will populate channel
+  (thread (loop [offset 0]
+            (let [updates-data (api/get-updates {:offset offset})
+                  new-offset (if (empty? updates-data)
+                               offset
+                               (-> updates-data last :update_id inc))]
+              (doseq [update updates-data] (>!! @updates update))
+              (if @running (recur new-offset)))))
+
+  (log/info "Started long-polling for Telegram updates"))
+{% endhighlight %}
+
+
+{% highlight clojure linenos %}
+(defn start!
+  "Starts long-polling process"
+  []
+  (log/debug "Trying to start polling threads")
+  (reset! updates (chan))
+  (reset! running true)
+
+  ;; Start infinite loop inside go-routine
+  ;; that will pull messages from channel
+  (go (loop []
+        (handle (<! @updates))
+        (if @running (recur))))
+
+  ;; Start thread with polling process
+  ;; that will populate channel
+  (thread (loop [offset 0]
+            (let [updates-data (api/get-updates {:offset offset})
+                  new-offset (if (empty? updates-data)
+                               offset
+                               (-> updates-data last :update_id inc))]
+              (doseq [update updates-data] (>!! @updates update))
+              (if @running (recur new-offset)))))
+
+  (log/info "Started long-polling for Telegram updates"))
 {% endhighlight %}
 
 Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
