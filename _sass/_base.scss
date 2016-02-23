@@ -132,9 +132,10 @@ pre,
 code {
     font-family: $code-font-family;
     font-size: 15px;
-    border: 1px solid $grey-color-light;
+    border: 1px solid $base2;
     border-radius: 3px;
-    background-color: #fdf6e3;
+    background-color: $base2;
+    color: $base01;
 }
 
 code {

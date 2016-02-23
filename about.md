@@ -1,15 +1,15 @@
 ---
 layout: page
-title: About
+title: Whois
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+Hi, I'm Anton and I've been developing for six years.
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jglovier" %} /
-[jekyll-new](https://github.com/jglovier/jekyll-new)
+Right now I'm looking for a job.
 
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+I offer substantial experience, which includes 6 years of developing APIs for web applications and internal systems. Applying my meticulous tech vision toward software problems and combining that diligence with my critical thinking skills and passion for finding simple and unique solutions to complex challenges would make me a solid asset to your community.
+
+Please inspect my [LinkedIn profile](https://www.linkedin.com/in/antonchebotaev) or [download my CV](/CV_AntonChebotaev.pdf) and pass it to your hiring committee.
+
+Thank you!
