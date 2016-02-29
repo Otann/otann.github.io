@@ -4,15 +4,17 @@
 @charset "utf-8";
 
 @import "solarized";
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Source+Code+Pro:400,700);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600|Source+Code+Pro:400,700);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 // Our variables
 $base-font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$base-font-size:   16px;
-$base-font-weight: 400;
+$base-font-size:   18px;
+$base-font-weight: 300;
 $small-font-size:  $base-font-size * 0.875;
 $base-line-height: 1.5;
 
+$accent-body-weight: 600;
 $code-font-family: "Source Code Pro", monospace;
 
 $spacing-unit:     30px;

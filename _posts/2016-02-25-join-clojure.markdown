@@ -2,7 +2,7 @@
 layout: post
 comments: false
 title:  "Let's build something fun"
-date:   2020-02-26 00:00:00 +0300
+date:   2016-02-26 00:00:00 +0300
 ---
 
 I want to show you something fun. I want you to show how simple Clojure is, and how fun creating something with it could be. I'm going to show you how to build something cool with it. And *please* don't be afraid of parenthesis, we are all adults here.
