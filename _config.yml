@@ -20,7 +20,7 @@ github_username:  otann
 # Build settings
 markdown: kramdown
 
-permalink: pretty
+permalink: /:categories/:title/
 
 # Google Analytics
 analytics_id: UA-74210223-1
