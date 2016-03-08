@@ -254,3 +254,12 @@ a.site-title {
         }
     }
 }
+
+#post-nav {
+  a {
+    font-weight: bold;
+    text-decoration: none;
+  }
+  a.prev { float: left; }
+  a.next { float: right; }
+}
