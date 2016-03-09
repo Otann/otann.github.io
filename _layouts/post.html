@@ -13,12 +13,31 @@ layout: default
     </p>
 
     {% if page.image %}
-      <div class="post-image"><img src="{{ page.image }}"/></div>      
+      <div class="post-image"><img src="{{ page.image }}"/></div>
     {% endif %}
   </header>
 
   <div class="post-content" itemprop="articleBody">
     {{ content }}
+  </div>
+
+  <div class="post-social">
+    <div class="facebook">
+      <div class="fb-like"
+           data-href="{{ page.url }}"
+           data-layout="button_count"
+           data-action="like"
+           data-show-faces="true"
+           data-share="true">
+      </div>
+    </div>
+    
+    {% if site.twitter_username %}
+    <div class="twitter">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-via="{{ site.twitter_username }}">Tweet</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+    </div>
+    {% endif %}
   </div>
 
   <div id="post-nav" class="clearfix">

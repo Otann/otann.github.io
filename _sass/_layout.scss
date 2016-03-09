@@ -269,9 +269,24 @@ a.site-title {
     }
 }
 
+.post-social {
+  margin: 3em 0;
+  text-align: center;
+
+  div {
+    display: inline-block;
+    margin: 0 .2em;
+  }
+
+  .twitter {
+    position: relative;
+    top: 7px;
+  }
+}
+
 #post-nav {
 
-  margin-bottom: 10em;
+  padding-bottom: 5em;
 
   a {
     font-weight: bold;
