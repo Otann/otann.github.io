@@ -1,10 +1,14 @@
 ---
-layout: post
+layout:   post
 comments: true
-title:  "Web Fandango, Introduction"
-date:   2016-03-01 00:00:00 +0300
+sharable: true
 category: web-fandango
+
+date:   2016-03-01 00:00:00 +0300
+title:  "Web Fandango, Introduction"
 image:  /media/calavera_office.jpg
+description: >
+  I am starting a series of posts to share the pleasure of mine of fooling around with web technologies.
 ---
 
 I am starting a series of posts to share the pleasure of mine of fooling around with web technologies. Thus the name for it — Web Fandango. My hope is to bring fun and entertainment for those of you who are doing web development on a daily basis.

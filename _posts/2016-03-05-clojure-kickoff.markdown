@@ -1,12 +1,14 @@
 ---
-layout: post
+layout:   post
 comments: true
 sharable: true
-title:  Web Fandango, Episode 01. Clojure Kickoff
-description: Today I am going to cover basic things about Clojure, so you can understand bits and pieces of code, that I will share with you to illustrate progress on my projects.
-date:   2016-03-09 00:00:00 +0300
-image:  /media/clojure-logo.png
 category: web-fandango
+
+date:   2016-03-09 00:00:00 +0300
+title:  Web Fandango, Episode 01. Clojure Kickoff
+image:  /media/clojure-bw-logo.png
+description: >
+  Today I am going to cover basic things about Clojure, so you can understand bits and pieces of code, that I will share with you to illustrate progress on my projects.
 ---
 
 Cheers!
