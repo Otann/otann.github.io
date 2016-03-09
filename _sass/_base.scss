@@ -116,14 +116,16 @@ a {
  * Blockquotes
  */
 blockquote {
-    color: $base0;
-    border-left: 6px solid $base01;
+    color: $base02;
+    border-left: 6px solid $brand-color;
     margin: 1em 0 $spacing-unit / 2 1em;
     padding-left: $spacing-unit / 2;
     padding-bottom: .1em;
-    font-size: 1.2em;
-    // letter-spacing: -1px;
+    font-size: 1.3em;
     font-style: italic;
+    letter-spacing: .2px;
+    line-height: 1.3em;
+    // font-weight: bold;
     // line-height: 1.1em;
 
     > :last-child {
