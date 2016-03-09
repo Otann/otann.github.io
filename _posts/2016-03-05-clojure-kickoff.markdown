@@ -1,8 +1,9 @@
 ---
 layout: post
-comments: false
-title:  "Web Fandango, Episode 01. Clojure Kickoff"
+comments: true
+title:  Web Fandango, Episode 01. Clojure Kickoff
 date:   2016-03-09 00:00:00 +0300
+image:  /media/clojure-logo.png
 category: web-fandango
 ---
 
@@ -16,7 +17,7 @@ Obviously, there is no lack of good starting points on Clojure if you want to kn
 
  - Kyle Kingsbury's [From The Ground Up](https://aphyr.com/posts/301-clojure-from-the-ground-up-welcome)
  - Clojure [For The Brave And True](http://www.braveclojure.com/)
- - My personal favorite &mdash; [Joy of Clojure](https://www.manning.com/books/the-joy-of-clojure-second-edition) Book.
+ - My personal favorite &mdash; [Joy of Clojure](https://www.manning.com/books/the-joy-of-clojure-second-edition) Book
 
 
 ## Build system
@@ -53,7 +54,7 @@ REPL stands for read-eval-print-loop, where you can type in some Clojure code, w
 
 That's all that we are going to need to start the Web Fandango series. Other concepts I will explain by the way, but these four are essential.
 
-Let's start with data and primitives. Like any of the mentioned above languages, we have booleans, integers, real numbers and strings:
+Let's start with data and primitives. Like any of the mentioned above languages, there are booleans, integers, real numbers and strings:
 
 ```clojure
 user=> ; this is a comment, to let you distinguish description from code
@@ -92,7 +93,7 @@ Their main strength and power comes with collections, which I will show you in a
 
 ### Symbols
 
-Symbols' closest analogy is identifiers in other languages.
+Closest analogy is identifiers in other languages.
 
 Let's give a piece of data a name to to play with it:
 

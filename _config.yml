@@ -14,7 +14,7 @@ description: >
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://otann.com" # the base hostname & protocol for your site
-twitter_username: anton_otann
+twitter_username: antonotann
 github_username:  otann
 
 # Build settings
