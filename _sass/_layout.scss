@@ -8,23 +8,27 @@
     // Positioning context for the mobile navigation icon
     position: relative;
 
-    a { text-decoration: none; }
+    a {
+      font-weight: normal;
+      text-decoration: none;
+    }
 
     img {
       width: 30px;
       height: 30px;
       position: relative;
-      top: -5px;
+      top: -4px;
     }
 
 }
 
 a.site-title {
   color: $red;
+  font-weight: $accent-body-weight;
 }
 .site-title {
-    font-size: 26px;
-    font-weight: 300;
+    font-size: 1.5em;
+    font-weight: $accent-body-weight;
 
     line-height: 56px;
     letter-spacing: -1px;

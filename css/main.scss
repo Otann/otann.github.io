@@ -4,23 +4,29 @@
 @charset "utf-8";
 
 @import "solarized";
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600|Source+Code+Pro:400,700);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
-// Our variables
-$base-font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,600|Roboto:300,700|Source+Code+Pro:400,700);
+$header-font-family: "Roboto Slab", serif;
+$base-font-family:   "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$code-font-family:   "Source Code Pro", monospace;
+
+// Also good one!
+// @import url(https://fonts.googleapis.com/css?family=Bitter|Raleway);
+// $header-font-family: "Bitter";
+// $base-font-family:   "Raleway";
+
 $base-font-size:   18px;
-$base-font-weight: 300;
 $small-font-size:  16px;
+$code-font-size:   16px;
+
+$base-font-weight:   300;
+$accent-body-weight: 700;
+
 $base-line-height: 1.5;
 
-$accent-body-weight: 600;
-$code-font-family: "Source Code Pro", monospace;
-
-$spacing-unit:     30px;
 
 $text-color:       $base02;
-$background-color: #fff; //$base3;
+$background-color: #fdfdfd; //$base3;
 $brand-color:      $blue;
 
 $grey-color:       $base0;
@@ -28,6 +34,7 @@ $grey-color-light: $base1;
 $grey-color-dark:  $base01;
 
 // Width of the content area
+$spacing-unit:     30px;
 $content-width:    800px;
 
 $on-palm:          600px;
