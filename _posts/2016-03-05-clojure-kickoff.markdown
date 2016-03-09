@@ -2,11 +2,11 @@
 layout:   post
 comments: true
 sharable: true
-category: web-fandango
+category: Web-Fandango
 
-date:   2016-03-09 00:00:00 +0300
-title:  Web Fandango, Episode 01. Clojure Kickoff
-image:  /media/clojure-bw-logo.png
+date:   2016-03-05 00:00:00 +0300
+title:  Episode 01. Clojure Kickoff
+image:  /media/posts/2016-03-05-clojure-kickoff/header.jpg
 description: >
   Today I am going to cover basic things about Clojure, so you can understand bits and pieces of code, that I will share with you to illustrate progress on my projects.
 ---
@@ -56,7 +56,7 @@ REPL stands for read-eval-print-loop, where you can type in some Clojure code, w
 
 ## Symbols, functions, collections
 
-That's all that we are going to need to start the Web Fandango series. Other concepts I will explain by the way, but these four are essential.
+That's all that we are going to need to start the Web Fandango series. Other concepts I will explain by the way, but these three are essential.
 
 Let's start with data and primitives. Like any of the mentioned above languages, there are booleans, integers, real numbers and strings:
 
@@ -119,9 +119,9 @@ user=> seventy-one
 71
 ```
 
-It is very comforting that once you construct some data and have a reference to it, the data stays forever as it is. No other thread or a library will ever change it. Don't worry about memory consumption, Clojure has something called *persistent data structures* that will effectively store immutable collections in memory.
+It is very comforting that once you construct some data and have a reference to it, the data stays forever as it is. No other thread or a library will ever change it. And if you want to modify its value, you will get a new *thing*. Your old *thing* will be left untouched. Don't worry about memory consumption, Clojure has something called *persistent data structures* that will effectively store immutable collections in memory.
 
-Variables are rarely used in Clojure and people are very comfortable without them. Usually, they are used as a constant reference to some variadic value. If you want to modify its value, you will get a new *thing*. Your old *thing* will be left untouched.
+Variables are rarely used in Clojure and people are very comfortable without them. Usually, they are used as a constant reference to some variadic value.
 
 You might think that it's a terrible life without reassignment values to *identifiers*. But think about daily routines with web applications -- we do not need those things for solving problems. We do not operate with processor registers or direct memory access, we just passing data from on source to another, modifying it a little on the way. Reassignments are just how we used to solve them, and it doesn't have to be that way.
 

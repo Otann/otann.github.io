@@ -3,8 +3,14 @@ layout: default
 ---
 <article class="post">
 
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
+  <header class="post-header {% if page.image %}with-image{% endif %}">
+    {% if page.image %}
+      <div class="post-image"><img src="{{ page.image }}"/></div>
+    {% endif %}
+
+    <div class="post-caption">
+      <h1 class="post-title">{{ page.title }}</h1>
+    </div>    
   </header>
 
   <div class="post-content">
