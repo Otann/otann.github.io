@@ -97,7 +97,7 @@ Firstly, check out `handler.clj` file:
 
 Here is one new concept that we haven't covered in previous post about Clojure &mdash; namespaces. It helps to divide code into logical blocks, like modules in Ruby or packages in Node. If you are familiar with those, this declaration should be intuitive for you:
 
-* `(ns chroma-bot.handler)` tells that this file contains namespace called **chroma-bot.handler**. It is considered a best practice if file structure duplicates namespace structure.
+* `(ns chroma-bot.handler)` tells that this file contains namespace called **chroma-bot.handler**. It is required to keep file structure same as namespace structure.
 * `:require` expression tells what to load from other namespaces and how to refer to those things:
 
   * `[namespace.foo :refer [a-function]]` will load `a-function` symbol, which we can use directly, like `wrap-defaults` from the code.
@@ -116,10 +116,10 @@ Here is how this code would look like in Node.js using Express.js:
 ```javascript
 // THIS IS JAVASCRIPT CODE!
 
-import express from 'express'
-import cors from 'cors'
+var express = require('express')
+var cors = require('cors')
 
-const app-routes = express();
+var app-routes = express();
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
@@ -189,7 +189,7 @@ Let's add some things here that we will need:
 * [`hiccup`](https://github.com/weavejester/hiccup) is a library for HTML generation straight from the code, which we'll use for landing page.
 * [`core.async`](https://github.com/clojure/core.async) is a concurrency abstraction, based on the idea of channels, also known as [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes). It will help us to talk to Telegram API on a local machine using long-polling.
 * [`timbre`](https://github.com/ptaoussanis/timbre) is a gorgeous logging library, that beautifully renders exception and works perfectly for both server and client-side code. It will add some beauty to our printing of technical info to console.
-* [`omniconf`](https://github.com/grammarly/omniconf) is a fabulous library be Grammarly to manage a configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
+* [`omniconf`](https://github.com/grammarly/omniconf) is a fabulous library by Grammarly to manage a configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
 
 ## Make it pretty
 
@@ -424,7 +424,7 @@ Will open your remotely deployed app:
 
 That would be it for this episode!
 
-You can check out full code at GitHub: [otann/chroma-bot](https://github.com/Otann/chroma-bot/tree/episode-02)
+You can check out full code at GitHub: [otann/chroma-bot:episode-02](https://github.com/Otann/chroma-bot/tree/episode-02)
 
 In the next one, we will follow the plan, connect Chroma Bot to Telegram and make some basic communication through messenger.
 
