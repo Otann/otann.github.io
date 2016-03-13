@@ -5,19 +5,18 @@ sharable: true
 category: Web-Fandango
 
 date:   2016-03-12 00:00:00 +0300
-title:  Episode 02. Chroma Bot Landing
+title:  Episode 02. Chroma Bot Landing Page
 image:  /media/posts/2016-03-12-chroma-bot-1/header.jpg
 description: >
-  How to build simple web application in Clojure and deploy it to free Heroku
+  I’m going to show you how to build a chatbot for Telegram and deploy it to Heroku. Today we start with a simple web application.
 ---
 
 Hello, dear friends!
 
-Welcome to Web Fandango series, where we build simple and fun projects in Clojure. Our next project will be very interesting, but kind of simple to implement. It will also be a solid ground for more complex ones that we will be covering later.
+Welcome to Web Fandango series, where we build simple and awesome projects in Clojure. Our next project will be fascinating, but easy to implement. It will also be a solid ground for more complex ones that we will be covering later.
 
-I'm going to show you how to build a chat-bot for Telegram. Bots are getting a lot of traction recently and Telegram is a popular messaging platform with very nice API to integrate with. Our bot will be relatively simple, it will wait for a color in a her form like `#dc322f` and send back a picture filled with that color.
-
-To start you will need **Leiningen** to create, build and run your project. If you don't have it yet, install it on a Mac like so:
+I’m going to show you how to build a chatbot for Telegram. Bots are getting a lot of traction recently, and Telegram is a popular messaging platform with an excellent API. Our bot will wait for a message with a color in a hex form like `#dc322f` and send back a picture filled with that color. Quite simple, but it would be a good example of how easy it is in Clojure.
+To start, you will need Leiningen to create, build and run your project. If you don’t have it yet, install it on a Mac like so:
 
     $ brew install leiningen
 
@@ -25,39 +24,39 @@ Or visit [official website](http://leiningen.org/) and follow instructions there
 
 ## The Plan
 
-Let's sketch a list of tools that we are going to need to build it.
+Let's sketch a list of steps that we are going to complete to build it.
 
 ### 1. Landing
 
-First, we are going to need a landing page for our bot, just a simple page that will show some information and a welcoming message with a button to add this bot to start a conversation.
+First, we are going to need a landing page for our bot, just a simple one that will show some information and a welcoming message with a button to add this bot to start a conversation.
 
 ### 2. Telegram API
 
-Then we will need our app to connect to Telegram and process everything that users send to it. There is two ways of doning so, as it is said in the [official documentation](https://core.telegram.org/bots/api#getting-updates):
+Then we will need our app to connect to Telegram and process everything that users send to it. There are two ways of doing so, as it [official documentation](https://core.telegram.org/bots/api#getting-updates) says:
 
-* we provide a public HTTP endpoint, that Telegram will call and feed updates to. This is great for a remotely deployed application, but can be tricky for local development, because people usually don't have public address for their machine and sit behind a router.
+* we provide a public HTTP endpoint, which Telegram will provide latest unprocessed messages from users. It is ideal for a remotely deployed application, but can be tricky for local development, because people usually don't have a public address for their machine and sit behind a router.
 
-* we perform long-polling of Telegram server. This is a continuous calling and waiting on the HTTP endpoint to receive information about messages sent to our bot and then making same call again. This works perfectly for debugging and testing from a local machine.
+* we perform long-polling of Telegram server. That means a continuous calling and waiting on the HTTP endpoint to receive information about messages sent to our bot and then making the same call again. This way is perfect for debugging and testing from a local machine.
 
 So we'll need some abstraction to make an infinite loop of remote calls, process the answers but still be able to serve our landing page.
 
 ### 3. Running a server
 
-Finally we need some tools to deploy run our app on a remote server, write it's progress to server log and monitor health of our app.
+Finally, we need some tools to run our app on a remote server, write it's progress to server log and monitor health of our app.
 
-We are going to deploy our bot to Heroku first, because it is dead easy to do and is free for small projects. The only problem with it is that sometimes our bot will die, because of the way Heroku manages resources. In later episodes I will show you how to deploy almost that easy, but with Docker and DigitalOcean.
+We are going to deploy our bot to Heroku first because it is dead easy to do and is free for small projects. The only problem with it is that sometimes our bot will die, because of the way Heroku manages resources. Later I will show you how to deploy almost that easy, but with Docker and DigitalOcean.
 
 ## Start a new project
 
-Now create a new project using a follwoing command:
+Now create a new project using the following command:
 
     $ lein new compojure chroma-bot
 
-This tells Leiningen to create a fresh project with the name `chroma-bot` from a template called `compojure`. **Compojure** is a wonderful library for building HTTP APIs, that reflects very well structure of your endpoints. You can think of it as a routing layer of our application. It also provides a convenient template to start a new project for Leiningen, which we just used.
+This command tells Leiningen to create a new project with the name `chroma-bot` from a template called `compojure`. **Compojure** is an incredible library for building HTTP APIs, which reflects the structure of your endpoints very well. You can think of it as a routing layer of our application. It also provides a convenient template to start a new project for Leiningen, which we just used.
 
-I suggest you to start a git repository right after you created a project and add first initial commit at this time, but that is totally up to you.
+I suggest you to start a git repository right after you created a project and add first initial commit at this time, but that is entirely up to you.
 
-This template lays a very good file structure for you:
+This template lays a fine file structure for you:
 
     $ tree chroma-bot -a
     chroma-bot
@@ -75,12 +74,12 @@ This template lays a very good file structure for you:
 
     6 directories, 5 files
 
-* `README.md` is a file that will be describe that project and will be displayed at its GitHub repo. I'm leaving this completely up to you.
-* `resources` is for static resources of your application, like css styles for webpages or image assets
+* `README.md` is a file that will describe your project and GitHub will render it nicely for you on the project page. I'm leaving this completely up to your imagination.
+* `resources` is for static resources of your application, like CSS styles for web pages or image assets
 * `src` hold your sources either in Clojure or ClojureScript
-* `test` is, like you might guessed, for unit tests
+* `test` is as you might guess, for unit tests
 
-Check out `handler.clj` file:
+Firstly, check out `handler.clj` file:
 
 ```clojure
 (ns chroma-bot.handler
@@ -103,12 +102,13 @@ Here is one new concept that we haven't covered in previous post about Clojure &
 
   * `[namespace.foo :refer [a-function]]` will load `a-function` symbol, which we can use directly, like `wrap-defaults` from the code.
   * `[namespace.bar :as bar]` will load all symbols from `namespace.bar` and we will be able to refer to them with `bar/` prefix, like `route/not-found` from the example above.
+  * You can also mix `:refer` and `:as` in a single require statement.
 
-That should give you a brief understanding of how namespaces are used. If you want to have a deeper understanding, try [this chapter](http://www.braveclojure.com/organization/) of Clojure for the Brave and True.
+That should give you a brief understanding of how to use namespaces. If you want to have a deeper understanding, try [this chapter](http://www.braveclojure.com/organization/) of Clojure for the Brave and True.
 
-Now what about the code?
+Now, what about the code?
 
-* `defroutes` defines routes ;) Seriously, it creates a structure that describes how to react for certain endpoints and gives it a name `app-routes`. There are two endpoints inside, *Hello world* response for root and *Not found* for everything else. This is really basic stuff, but look how elegant it looks!
+* `defroutes` defines routes ;) Seriously, it creates a structure that describes how to react for particular endpoints and gives it a name `app-routes`. There are two endpoints inside, *Hello world* response for root and *Not found* for everything else. That is certainly a very simple example, but look how elegant it looks!
 * `def app` defines new symbol, which is `app-routes` covered with middleware, which as [docs](https://github.com/ring-clojure/ring-defaults#basic-usage) says *"add support for parameters, cookies, sessions, static resources, file uploads, and a bunch of browser-specific security headers"*
 
 Here is how this code would look like in Node.js using Express.js:
@@ -133,7 +133,7 @@ app.use(cors());
 // and other things provided by site-defaults in Compojure
 ```
 
-Not that much different, right? Same stuff about requiring external modules and a little bit less consise declaration of routes.
+Not that much different, right? Same stuff about requiring external modules and a little bit less concise declaration of routes.
 
 Now let's have a look at `project.clj` file, which defines metadata for our project:
 
@@ -154,9 +154,9 @@ Now let's have a look at `project.clj` file, which defines metadata for our proj
 
 This should be mostly self-explanatory, but let's briefly discuss it.
 
-Amazing thing to note is that project definition this is plain Clojure code and everything there is just keywords, lists, symbols and strings.
+Amazing thing to note is that project definition is plain Clojure code and everything there is just keywords, lists, symbols and strings.
 
-`defproject` tells that this expression defines project with name `chroma-bot` and version `0.1.0-SNAPSHOT`. First couple of arguments is project name and version followed by a set of key-value pairs that describes project metadata.
+`defproject` tells that this expression defines a project with name `chroma-bot` and version `0.1.0-SNAPSHOT`. The first couple of arguments is project name and version followed by a set of key-value pairs that describes project metadata.
 
 Our primary interest here is `dependencies`. This should remind you of `Gemfile` or section of `package.json` of the same name, because it serves exactly the same purpose. It shows list or necessary libraries that should be pulled from remote repository and added to our project:
 
@@ -184,11 +184,12 @@ Let's add some things here that we will need:
                [hiccup "1.0.5"]]
 ```
 
-* [`ring`](https://github.com/ring-clojure/ring) is an HTTP abstraction for clojure. As documentation says, it is *inspired by Python's WSGI and Ruby's Rack*. There is server that runs our routes and middleware that does jobs like logging errors or converting request to various formats depending on the content-type header.
-* [`hiccup`](https://github.com/weavejester/hiccup) is a library for HTML generation straight from the code, which we'll use for landing.
-* [`core.async`](https://github.com/clojure/core.async) is a concurrency abstraction, based on idea of channels, also known as [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes). It will help us to talk to Telegram API from a local machine using long-polling.
-* [`timbre`](https://github.com/ptaoussanis/timbre) is a nice logging library, that beautifully renders exception and works great for both server and client-side code. It will add some beauty to our printing og technical info to console.
-* [`omniconf`](https://github.com/grammarly/omniconf) is an amazing library be Grammarly to manage configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
+* [`ring`](https://github.com/ring-clojure/ring) is an HTTP abstraction for Clojure. As the documentation says, it is *inspired by Python's WSGI and Ruby's Rack*. There is a server that runs, functions that processes requests and middleware that does jobs like logging errors or converting the request to various formats depending on the content-type header.
+* [`compojure`](https://github.com/weavejester/compojure) is a routing library that helps you tremendously to define functions in a modular way for different endpoints and compose them into single ring-compatible one.
+* [`hiccup`](https://github.com/weavejester/hiccup) is a library for HTML generation straight from the code, which we'll use for landing page.
+* [`core.async`](https://github.com/clojure/core.async) is a concurrency abstraction, based on the idea of channels, also known as [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes). It will help us to talk to Telegram API on a local machine using long-polling.
+* [`timbre`](https://github.com/ptaoussanis/timbre) is a gorgeous logging library, that beautifully renders exception and works perfectly for both server and client-side code. It will add some beauty to our printing of technical info to console.
+* [`omniconf`](https://github.com/grammarly/omniconf) is a fabulous library be Grammarly to manage a configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
 
 ## Make it pretty
 
@@ -201,16 +202,16 @@ Remember in `project.clj` we had this piece of code?
 
 This is plugin that helps you to run your app locally. Give it a shot:
 
-   $ lein ring server
+    $ lein ring server
 
-This should open a http://localhost:8080/ page in your browser wich will look like this:
+This should open a [http://localhost:8080/](http://localhost:8080/) page in your browser wich will look like this:
 
 <!-- this is my retina screenshot, so we force width here -->
 <img src="/media/posts/2016-03-12-chroma-bot-1/start.png" width="711px"/>
 
-You can replace "Hello World" in your code, refresh your page in the browser and observe changes immediately. Funcy, huh!
+You can replace "Hello World" in your code, refresh your page in the browser and observe changes straight away. Fancy, huh!
 
-But our page doesn't look that fancy. Let's add some style to it. I hope you are familiar with CSS & HTML :) If not, there is [beautiful and easy tutorial](http://marksheet.io/) that will help you to get deep understanding very quickly.
+But our page doesn't look that fancy yet. Let's add some style to it. I hope you are familiar with CSS & HTML :) If not, there is [beautiful and easy tutorial](http://marksheet.io/) that will help you to get thorough understanding very quickly.
 
 Add `styles.css` file to `resources/public` folder with following content:
 
@@ -229,7 +230,7 @@ Add `styles.css` file to `resources/public` folder with following content:
 .n-4 { background-color: #5B5941; }
 ```
 
-This is some color for our banner. Other css classes are used from superb [Semantic UI](semantic-ui.com) project which provides excellent tools for laying out UI for web application. We are using just a tiny portion of it now, but later it will shine in its full potential when we will be covering more complex UIs in ClojureScript.
+There we defined colors for our landing banner. Other CSS classes we are taking from exceptional [Semantic UI](semantic-ui.com) project which provides excellent tools for laying out UI for a web application. We are using just a tiny portion of it now, but later it will shine in its full potential when we cover more complex UIs in ClojureScript.
 
 Add `layout.clj` to your `src/chroma_bot` folder that will contain html generation for our landing:
 
@@ -271,18 +272,18 @@ Add `layout.clj` to your `src/chroma_bot` folder that will contain html generati
        [:a.ui.huge.button {:href "#"} "Start Conversation" [:i.icon.right.arrow]]]]]))
 ```
 
-This might be offbeat for **erb** or **mustache** people, but should be very familiar to **haml** folks. Here we are using [Hiccup](https://github.com/weavejester/hiccup) library for generating HTML. It has dead simple syntax, which you probably already figured our: `[tag.class {:attribute value} children]`.
+That might be offbeat for **erb** or **mustache** people, but should be very familiar to **haml** folks. Here we are using [Hiccup](https://github.com/weavejester/hiccup) library for generating HTML. It has dead simple syntax, which you probably already figured our: `[:tag.class {:attribute value} children]`.
 
-With it's help we defined `page` function that covers content with meta information. After that we defined home page with some text and a banner to make our landing look pretty.
+With it's help we defined `page` function that wraps content with meta information. After that, we declare home page symbol with some text and a banner to make our landing look lovely.
 
-Refresh our page in your browser and you should see something like this:
+Refresh the page in your browser and you should see something like this:
 
 <!-- this is my retina screenshot, so we force width here -->
 <img src="/media/posts/2016-03-12-chroma-bot-1/local.png" width="711px"/>
 
 Quite a thing for so little effort so far!
 
-## Make it runnable
+## Make it runnable and deployable
 
 Next thing we'll do is make our code runnable on Heroku. By default it builds Clojure projects by packaging them into `.jar` files, so we should prepare a suitable runnable artifact for it.
 
@@ -312,11 +313,11 @@ Create a `main.clj` file in `chroma_bot` folder with the following content:
 
 Here is what is does:
 
-* `(:gen-class)` tells Leiningen to generate *Java class* from his namespace, which could be used as an entry point for the packaged application. Java class is required, so we can define it as an entry point for `.jar` file.
+* `(:gen-class)` tells Leiningen to generate *Java class* from his namespace, which acts as an entry point for the `.jar`-packaged application.
 
-* `cfg/define` describes configuration structure for our application. We start with only one parameter &mdash; port on which Heroku will run our app. This value will be provided to us through environment variable `PORT` which `omniconf` will pull automatically, based on `:port` name that we gave it as a key.
+* `cfg/define` describes configuration structure for our application. We start with only one parameter &mdash; a port on which Heroku will run our app. They will provide a value for us through environment variable `PORT` which `omniconf` will pull automatically, based on `:port` name that we gave it as a key.
 
-* `-main` is the conventional name for a method that will be called when the Java class will be called from command line. In that method we call `cfg/populate-from-env` function to pull configuration from environment variables, then validate it with `(cfg/verify :quit-on-error true)`. After that we log simple message that our server has started and, well, start a HTTP server, providing it our template-generated routes by calling `run-jetty`.
+* `-main` is the conventional name for a method that will be called when the Java class will be called from command line. In that method we call `cfg/populate-from-env` function to pull configuration from environment variables, then validate it with `(cfg/verify :quit-on-error true)`. After that we log simple message that our server has started and, well, start an HTTP server, providing it our template-generated routes by calling `run-jetty`.
 
 Now let's provide instruction for Leiningen about how to run packaged application. Change `profiles` section in the `project.clj` file to look like this:
 
@@ -353,6 +354,8 @@ Now navigate to http://localhost:8080 in your browser and you should see same la
 ## Ship and Push it
 
 If you don't have Heroku account, I encourage you to [give it a shot and sign up](https://signup.heroku.com/). Otherwise just skip one paragraph about login.
+
+<img src="/media/posts/2016-03-12-chroma-bot-1/heroku.png" width="1146px"/>
 
 After you sign up, Heroku will suggest you to install their [Toolbelt](https://toolbelt.heroku.com/) and so you should ;)
 
@@ -401,7 +404,7 @@ Now, commit everything we've created so far and push it Heroku's remote reposito
 
     # ...
     #
-    # really long log of building an app will be here, but I omit it
+    # extraordinarily long log of building an app will be here, but I omit it
     # it should end with something like this:
     #
 
@@ -423,7 +426,7 @@ That would be it for this episode!
 
 You can check out full code at GitHub: [otann/chroma-bot](https://github.com/Otann/chroma-bot/tree/episode-02)
 
-In the next one we will follow the plan, connect Chroma Bot to Telegram and make some basic communication through messenger.
+In the next one, we will follow the plan, connect Chroma Bot to Telegram and make some basic communication through messenger.
 
 I hope you had fun and and enjoyed this episode. Please like and share and let me know what you think in a comment section below.
 
