@@ -1,0 +1,444 @@
+---
+layout:   post
+comments: true
+sharable: true
+category: Web-Fandango
+
+date:   2016-03-13 00:00:00 +0300
+title:  Episode 03. Telegram Bot API
+image:  /media/posts/2016-03-15-chroma-bot-2/header.jpg
+description: >
+  In this episode we will connect Clojure application to Telegram
+  via long-polling with help of core.async
+---
+
+Hello, dear fellows!
+
+Welcome to Web Fandango series, where we build simple and awesome projects in Clojure. In the last episode we built a simple You can check out where we stopped on the previous episode at GitHub repo  [otann/chroma-bot:episode-02](https://github.com/Otann/chroma-bot/tree/episode-02)
+
+Today we follow previously sketched plan and after we have landing and deploy process, let's connect to Telegram. As you can see in Telegram's [Bot API Documentation](https://core.telegram.org/bots/api) we should make an HTTP calls on their endpoint to receive new messages from users. To do that let's implement some wrappers for Telegram API.
+
+## Telegram API
+
+Add `[clj-http "2.0.0"]` and `[cheshire "5.5.0"]` to your project dependencies in `project.clj` file.
+
+* [`clj-http`](https://github.com/dakrone/clj-http) is a library for making external HTTP calls
+* [`cheshire`](https://github.com/dakrone/cheshire) parses and constructs JSON data from Clojure structures
+
+Then create `telegram` folder in your source `src` directory, which will be home namespace for all our Telegram related code.
+
+> If we keep it clean and independent from other pieces of the code, we might even turn it to a separate library later! That, in my opinion, is a good way of thinking to maintain your code truly modular.
+
+Start by adding `api.clj` file there with following content. Let's start with namespace declaration and some constants:
+
+```clojure
+(ns telegram.api
+  (:require [taoensso.timbre :as log]
+            [clj-http.client :as http]))
+
+(def base-url "https://api.telegram.org/bot")
+
+(def token (atom nil))            
+```
+
+What is `atom`? It's a box for variadic things, which is used for state management. They provide great help when dealing with concurrent operations, because they guarantee that no two threads will access their value at the same time. And they are very easy to use. There are only three things you can do with atoms:
+
+* **dereference** them to get their value
+* `swap!` to apply a function to a value and receive a result
+* `reset!` to completely replace old value with your new one
+
+Here is some example from the repl:
+
+```clojure
+user=> (def n (atom 0))
+#'user/n
+user=> (deref n)
+0
+user=> @n
+0
+user=> (reset! n 100)
+100
+user=> (swap! n inc)
+101
+user=> @n
+101
+```
+
+We will fill value for `token` atom later, now let's imagine we have it and write a function to get updates from Telegram, using [provided documentation](https://core.telegram.org/bots/api#getupdates):
+
+```clojure
+(defn get-updates
+  "Receive updates from Bot via long-polling endpoint"
+  [{:keys [limit offset timeout]}]
+  (let [url (str base-url @token "/getUpdates")
+        query {:timeout (or timeout 1)
+               :offset  (or offset 0)
+               :limit   (or limit 100)}
+        resp (http/get url {:as :json :query-params query})]
+    (-> resp :body :result)))
+```
+
+This function receives one argument and expects it to be a map with following keys: `[limit offset timeout]`. This is called destructuring, and was explained [couple of episodes ago](web-fandango/clojure-kickoff/). So this definition presumes that it will be called like this:
+
+```clojure
+(get updates {:limit 10
+              :offset 0
+              :timeout 100})
+```
+
+If some of the keys will be omitted, then corresponding symbol inside method definition will have `nil` value.
+
+Then there is `let` expression that declares some intermediary  definitions:
+
+* `url (str base-url @token "/getUpdates")` declares a new symbol `url` that is string concatenation of `base-url`, Telegram token and method that we should use to get updates
+* `query` defines map with same values as method parameters, but adds defaults if parameters are missing
+* `resp` is a result of calling (http/get ...) function that will make an HTTP request and return a map with response from remote server. We also ask to interpret response as JSON and therefore coerce it to standard Clojure map.
+
+What does the `->` arrow means? It is a handy way of writing multiple functions that call each other. Instead of this clumsy way fo getting something deep from a map:
+
+```
+(:result (:body resp))
+```
+
+We can write this, which follow map structure more clearly from outside to the inside:
+
+```
+(-> resp :body :result)
+```
+
+After receiving results we would want to make a reply, so let's implement a function for sending messages following [corresponding documentation](https://core.telegram.org/bots/api#sendmessage):
+
+```clojure
+(defn send-message
+  "Sends message to user"
+  [chat-id options text]
+   (log/debug "Sending message" text "to" chat-id)
+   (let [url   (str base-url @token "/sendMessage")
+         query (into {:chat_id chat-id :text text} options)
+         resp  (http/get url {:as :json :query-params query})]
+     (log/debug "Got response from server" (:body resp))))
+```
+
+This is almost identical to function above, same thing going on here, we prepare arguments for a method using intermediary symbols, then make a call and log it to the console.
+
+Let's make this function a little bit more convenient. Say, most ot the time we don't have any special options to pass, so we want to call it with two arguments instead of four. That is no problem in Clojure to define multi-[arity](https://en.wikipedia.org/wiki/Arity) function:
+
+```clojure
+(defn send-message
+  "Sends message to user"
+
+  ([chat-id text] (send-message chat-id {} text))
+
+  ([chat-id options text]
+   (log/debug "Sending message" text "to" chat-id)
+   (let [url (str base-url @token "/sendMessage")
+         query (into {:chat_id chat-id :text text} options)
+         resp (http/get url {:as :json :query-params query})]
+     (log/debug "Got response from server" (:body resp)))))
+```
+
+It's like two definition by the price of one! Function with arity of two calls three arity verision with default argument. In that way you can call this functions in two ways:
+
+```clojure
+(api/send-message chat-id "Hello there!")
+; or like this:
+(api/send-message chat-id
+                  {:parse_mode "Markdown"}
+                  "Well, *hello there!*")
+```
+
+
+
+## Long polling loop
+
+Now having a way to get updates in our code, we should implement infinite loop where we will do it.
+
+Create a file `polling.clj` in `telegram` namespace and add `ns` definition:
+
+```clojure
+(ns telegram.polling
+  "Declares long-polling routines to communicate with Telegram Bot API"
+  (:require [clojure.core.async :refer [>!! <! go chan close! thread]]
+            [telegram.api :as api]            
+            [taoensso.timbre :as log]))
+```
+
+Now, let's talk about concurrency a little bit, because there are no infinite loops without touching that topic.
+
+We are going to use `core.async`. It's built around *channel* concept. Channel is a virtual place where data flows from one end to another. You can think of it like of conveyor belt or a messaging queue. You put data to one side and pull from the other:
+
+<img src="/media/posts/2016-03-15-chroma-bot-2/channel.png" width="300px"/>
+
+This is a very convenient to reason about, because you can separate consumers and producers of data in your code, like people do it using queues to divide complex systems into pieces.
+
+If you are insterested more in the topic, check out [this talk by Rich Hickey](http://www.infoq.com/presentations/clojure-core-async), author of Clojure and creator of `core.async`. As usual, I'm going to cover basics and uses many "virtual" threads within real thread pool.
+
+There are two flavors when working with channels: using real threads, that are wrapped around Java threads and it ways of blocking or parked threads, which are modeled after Go threading model. If you choose working with parked threads then you should wrap communications with channels into `go` expression. I advice to use parked threads, unless there is real need for real ones.
+
+If you are a happy consumer, you just are about when channel has any data that you could process.
+
+<img src="/media/posts/2016-03-15-chroma-bot-2/consumers.png" width="300px"/>
+
+So imagine we have a channel called `updates`, where updates from Telegram would appear and a function `handle` that processes them. Here is the code that will do the trick:
+
+```clojure
+(go (loop []
+      (handle (<! updates))
+      (if running (recur))))
+```
+
+* `(<! updates)` pulls new message from the channel. If there is no messages, thread that is performing this whole operation withing `go` expression will be parked and some other *go-routine* will be performed by dedicated thread pool.
+* `(if running (recur))` checks some previously declared state if this loop should continue and if so, calls `recur`, which means that expression within `loop` will be executed again.
+
+That will make an infinite loop for handling messages. How would we populate this channel with data? As cosumers, producers also care just for their end of the conveyor belt:
+
+<img src="/media/posts/2016-03-15-chroma-bot-2/producers.png" width="300px"/>
+
+So for producing messages we would need same kind of a `loop` expression, that will check if it should be `@rinnung` and if so, then call `recur`. But here is the difference with consuming, HTTP call that will will make will hang untill there is new data on the Telegram server. And is we use thread pool that is shared with the rest of the system, that would be a very unpleasant thing to constantly block one of the threads. So here we will need to use `>!!` operation for pushing data into the channel.
+
+```clojure
+(thread (loop [offset 0]
+          (let [updates-data (api/get-updates {:offset offset})
+                new-offset   (if (empty? updates-data)
+                               offset
+                               (-> updates-data last :update_id inc))]
+            (doseq [update updates-data] (>!! updates update))
+            (if running (recur new-offset)))))
+```
+
+* Here instead of `go` you see `thread` which starts a new thread that will execute expression passed as an argument.
+* `loop` here declares a binding: `offset` symbol with initial value 0. When later this loop will be called again with `recur`, offset symbol will be equal to parameter that was passed to `recur`
+* We use this technique to gradually increase offsets, as [Telegram documentation](https://core.telegram.org/bots/api#getupdates) suggest. Initial offset equals zero, but subsequent calls choose new offset as incremented id of the last received message.
+* `doseq` means *do for sequence* and in same way as `map` does, but with a neat binding that improves readability
+
+Now you see that there are couple of things (`running` and `updates`) that will be used by multiple threads and these are perfect spots for using atoms.
+
+Let's declare them as atoms and combine both pieces of code into one function `start!`. Here how the whole `polling.clj` will look like then:
+
+```clojure
+(ns telegram.polling
+  "Declares long-polling routines to communicate with Telegram Bot API"
+  (:require [taoensso.timbre :as log]
+            [clojure.core.async :refer [>!! <! go chan close! thread]]
+
+            [telegram.api :as api]
+            [telegram.handlers :refer [handle]]))
+
+;; this holds updates from Telegram
+(def updates (atom nil))
+
+;; this controls if loops are rolling
+(def running (atom false))
+
+(defn start!
+  "Starts long-polling process"
+  []
+  (log/debug "Trying to start polling threads")
+  (reset! updates (chan))
+  (reset! running true)
+
+  ;; Start infinite loop inside go-routine
+  ;; that will pull messages from channel
+  (go (loop []
+        (handle (<! @updates))
+        (if @running (recur))))
+
+  ;; Start thread with polling process
+  ;; that will populate channel
+  (thread (loop [offset 0]
+            (let [updates-data (api/get-updates {:offset offset})
+                  new-offset (if (empty? updates-data)
+                               offset
+                               (-> updates-data last :update_id inc))]
+              (doseq [update updates-data] (>!! @updates update))
+              (if @running (recur new-offset)))))
+
+  (log/info "Started long-polling for Telegram updates"))
+
+(defn stop!
+  "Stops everything"
+  []
+  (reset! running false)
+  (close! @updates))
+```
+
+
+
+If you still have any questions about the code, please don't hesitate and ask in a comment section below.
+
+Here I referenced `telegram.handlers` namespace, because I think handling messages is a matter of concern of a different module. Let's jump into that. If we want to externalize behavior of our bot from a Telegram communication, then we should design a place where we would store multiple handlers and let Telegram module use them. Let's do it:
+
+```clojure
+(ns telegram.handlers
+  (:require [taoensso.timbre :as log]))
+
+(def ^:private handlers (atom []))
+
+(defn add-handler! [handler]
+  (swap! handlers #(conj % handler)))
+
+(defn reset-handlers!
+  ([] (reset-handlers! []))
+  ([value] (reset! handlers value)))
+
+(defn handle [update]
+  (if (empty? @handlers)
+    (log/warn "There were no handlers to process update from Telegram")
+    (doseq [handler @handlers]
+      (try
+        (handler update)
+        (catch Exception e
+          (log/error e "Got error in on of the handlers:"))))))
+```
+
+* `^:private` is a way of making a symbol visible inside it's namespace only. Since handlers is a state, we want to be careful and keep to ourselves.
+* `handlers` is an atom that holds list and `add-handler!` and `reset-handlers!` are publicl functions that add and remove handlers from that list
+* what's up with the exclamation marks, are they special? No, but it's a part of a convention to indicate that this method operates on state. Similar thing is to use question marks in the end of the name for boolean predicates, like `empty?`
+* `handle` is function that we planned on using before
+* `try` checks that whatever happens inside the handler provided from the outside will ruin running thread.
+
+Last thing to do is to write initialization that will be a handy way to bot set up a value for the token, add some handlers and start long-polling loops.
+
+Add file `core.clj` to your `telegram` namespace:
+
+
+```clojure
+(ns telegram.core
+  (:require [telegram.api :as api]
+            [telegram.handlers :as h]
+            [telegram.polling :as polling]))
+
+
+(defn init!
+  "Initializes Telegram cliend and starts all necessary routines"
+  [{:keys [token handlers polling]}]
+  (if token
+    (reset! api/token token)
+    (throw (Exception. "Can't intialize Telegram without a token")))
+
+  (if (seq handlers) (h/reset-handlers! handlers))
+  (if polling (polling/start!)))
+```  
+
+Here we have single `init` function that ties everything we've done together:
+
+* it resets Telegram token
+* it sets handlers if they were provided
+* it starts long-polling process if `:polling` key pointed to some truthful value
+
+## Try it out
+
+Now it's time to start our bot and give it a ride.
+
+If you are not a Telegram user yet, got to [Telegram.org](https://telegram.org/) and sign up using your favorite platform. Then start a conversation with the [Botfather](https://telegram.me/BotFather).
+
+Type there `/newbot` to start bot creation process:
+
+<!-- this is my retina screenshot, so we force width here -->
+<img src="/media/posts/2016-03-15-chroma-bot-2/botfather-1.png" width="538px"/>
+
+Work through all necessary steps to create your bot until you get something like this:
+
+<!-- this is my retina screenshot, so we force width here -->
+<img src="/media/posts/2016-03-15-chroma-bot-2/botfather-2.png" width="512px"/>
+
+Note the token Botfather gave to you, because we will need it in a moment. Add `:telegram-token` to your configuration in `main.clj`, so the whole thing will look like this:
+
+```clojure
+(cfg/define {:port {:description "HTTP port"
+                    :type :number
+                    :default 8080}
+             :telegram-token {:description "Token to connect to Telegram API"
+                              :type :string
+                              :required true
+                              :secret true}})
+```
+
+> I strongly encourage you not to store any default values for sensitive tokens or keys from the start of your app. It is important matter and do not put it away, deal with it immediately as you introduce this type of data to your app.
+
+This is why there is no default value for the token and why it is marked as secret. Omniconf prints configuration when it validates it, so when it sees that mark, it will print `<SECRET>` instead of actual value.
+
+But in this case we won't be able to run our app as usual with `lein ring server`, because there would be no token and no polling started. That is unacceptable! Let's fix it.
+
+Replace `:ring` section in your `project.clj` file with following:
+
+```clojure
+:ring {:handler chroma-bot.handler/app
+       :init chroma-bot.main/ring-init}
+```
+
+This will tell ring-plugin to call `ring-init` function from `chroma-bot.main` namespace when you run your server! Let's add it.
+
+Here is updated content of `main.clj`:
+
+```clojure
+(ns chroma-bot.main
+  "Responsible for starting application from command line"
+  (:gen-class)
+  (:require [taoensso.timbre :as log]
+            [clojure.java.io :as io]
+            [omniconf.core :as cfg]
+            [ring.adapter.jetty :refer [run-jetty]]
+
+            [telegram.core :as telegram]
+            [telegram.api :as api]
+            [chroma-bot.handler :refer [app]]))
+
+(cfg/define {:port {:description "HTTP port"
+                    :type :number
+                    :default 8080}
+             :telegram-token {:description "Token to connect to Telegram API"
+                              :type :string
+                              :required true
+                              :secret true}})
+
+(defn handler
+  "Handles update object that the bot received from a Telegram API"
+  [update]
+  (when-let [message (:message update)]
+    (api/send-message (-> update :message :chat :id)
+                      (str "Hi there! 😊"))))
+
+(defn init []
+  (cfg/verify :quit-on-error true)
+  (telegram/init! {:token (cfg/get :telegram-token)
+                   :handlers [handler]
+                   :polling true}))
+
+(defn ring-init []
+  (let [local-config "dev-config.edn"]
+    (if (.exists (io/as-file local-config))
+      (cfg/populate-from-file local-config)
+      (log/warn "Can't find local dev configuration file" local-config))
+    (init)))
+
+(defn -main [& args]
+
+  (cfg/populate-from-env)
+  (cfg/verify :quit-on-error true)
+  (log/info "Starting server")
+  (run-jetty app {:port (cfg/get :port) :join? false}))  
+```
+
+* YES! Clojure can work with emojis! 👍
+* now `-main` and `ring-init` will both call `init` that will start polling process
+* `ring-init` also checks if there is `dev-config.edn` file in your root project folder and if there is one, read configuration from it.
+
+One last little thing: add `dev-config.edn` line to your `.gitignore` file and never, **never ever**, commit your tokens to the repository.
+
+Only after you done that, create `dev-config.edn` with following content:
+
+```clojure
+{:port 3000
+ :telegram-token "PLACE YOUR ACTUAL TOKEN HERE, SERIOUSLY, DON'T FORGET TO GITIGNORE THIS FILE"}
+```
+
+Yes, this is Clojure data, *A superset of [edn](https://github.com/edn-format/edn) format is used by Clojure to represent programs* (as docs says), so it looks unsurprisingly like Clojure data structures.
+
+Now finally you can start your bot with
+
+    $ lein ring server
+
+By the way, if you don't want `ring-plugin` to open a browser for you, use following instead:
+
+    $ lein ring server-headless
