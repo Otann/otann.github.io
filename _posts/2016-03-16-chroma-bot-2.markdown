@@ -27,7 +27,7 @@ Add `[clj-http "2.0.0"]` and `[cheshire "5.5.0"]` to your project dependencies i
 
 Then create `telegram` folder in your source `src` directory, which will be home namespace for all our Telegram related code.
 
-> If we keep it clean and independent from other pieces of the code, we might even turn it to a separate library later! That, in my opinion, is a good way of thinking to maintain your code truly modular.
+> If we keep it clean and independent from other pieces of the code, we might even turn it to a separate library later! That, in my opinion, is a good way of thinking to keep your code truly modular.
 
 Start by adding `api.clj` file there with following content. Let's start with namespace declaration and some constants:
 
@@ -442,3 +442,14 @@ Now finally you can start your bot with
 By the way, if you don't want `ring-plugin` to open a browser for you, use following instead:
 
     $ lein ring server-headless
+
+Then start conversation with your bot in telegram:
+
+<!-- this is my retina screenshot, so we force width here -->
+<img src="/media/posts/2016-03-15-chroma-bot-2/chroma-bot-alive.png" width="463px"/>
+
+## It's alive!
+
+Congratulations! You now have your own talking bot in telegram.
+
+That would be all for this episode. I hope you had a great time following through and feeling great if you learned new things today. In the next episode we'll do actual command detection and picture sharing.
