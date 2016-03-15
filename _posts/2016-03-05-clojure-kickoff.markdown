@@ -34,7 +34,7 @@ You can install Leiningen on a Mac using Homebrew:
 
 For other platforms visit [official website](http://leiningen.org/) and follow instructions there.
 
-To try concepts that I'm about to explain, you need to launch REPL. This is similar to how you do it with `iptyhon`, `node` or `irb` commands. Here is what it looks like:
+To try concepts that I'm about to explain, you need to launch REPL. This is similar to how you do it with `ipython`, `node` or `irb` commands. Here is what it looks like:
 
 ```
 $ lein repl
