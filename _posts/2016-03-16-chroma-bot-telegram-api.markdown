@@ -380,7 +380,7 @@ Note the token Botfather gave to you, because we will need it in a moment. Add `
                               :secret true}})
 ```
 
-> I strongly encourage you not to store any default values for sensitive tokens or keys from the start of your app. It is an important matter and do not put it away, deal with it immediately as you introduce this type of data to your app.
+> I strongly encourage you not to store any default values for sensitive tokens or keys from the start of your development. It is an important matter and do not put it away, deal with it immediately as you introduce this type of data to your app.
 
 That is why there is no default value for the token and why we marked it as secret. Omniconf prints configuration when it validates it, so when it sees that mark, it will print `<SECRET>` instead of actual value.
 
