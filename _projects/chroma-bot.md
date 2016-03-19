@@ -6,28 +6,30 @@ sharable: true
 title:  Chroma Bot
 image:  /media/projects/chroma-bot/header.jpg
 description: >
-  ChromaBot is a dead simple bot that detects colors in messages in hex form, like #dc322f and send back a picture filled with that color.
+  Here I tell how to implement a dead simple bot for Telegram that detects colors in messages in hex form, like #dc322f, and sends back a picture filled with that color.
 ---
 
-This project is a dead simple bot that detects colors in messages in hex form, like #dc322f and send back a picture filled with that color.
+This project is a dead simple bot for Telegram that detects colors in messages in hex form (like `#dc322f`) and sends back a picture filled with that color.
 
-It was developed as a part of Web Fandango series to demonstrate basic concepts of web services and concurrency in Clojure.
+I developed it to see how Telegram's Bot API work and to play with it.
 
-Here is list of posts with topics that are covered in them:
+The project turned out to be very simple, so I decided to use it for an opening for Web Fandango series. That simplicity allowed me to cover basic things, like projects, namespaces and routing for web services. This project is also an excellent illustration of how to use core.async.
 
-### [Episode 02. Chroma Bot Landing Page](/web-fandango/chroma-bot-1/)
+You can check out sources on the GitHub [repository](https://github.com/Otann/chroma-bot).
 
-* How to start Clojure application from a template
-* How to set projects external dependencies
-* What are namespaces and how to use them
-* How to run application locally
-* How to generate and serve HTML page using Clojure data structures
-* How to deploy app to Heroku
+Here is the list of posts from the series about the bot:
 
-### [Episode 03. Chroma Bot Telegram API](web-fandango/chroma-bot-telegram-api/)
+* ### [Episode 02. Chroma Bot Landing Page](/web-fandango/chroma-bot-1/)
+  * How to start a Clojure application from a template
+  * How to set the project's external dependencies
+  * What are namespaces and how to use them
+  * How to run an application locally
+  * How to generate and serve an HTML page using Clojure data structures
+  * How to deploy an app to Heroku
 
-* How make HTTP request and deal with response
-* How to wrap Telegram API in Clojure functions
-* What are two basic concurrency models
-* How to implement long-polling using `core.async`
-* How to load and store secret tokens and sensitive keys
+* ### [Episode 03. Chroma Bot Telegram API](web-fandango/chroma-bot-telegram-api/)
+  * How to make an HTTP request and deal with a response
+  * How to wrap the Telegram API in Clojure functions
+  * What are two basic concurrency models
+  * How to implement a long-polling using `core.async`
+  * How to load and store secret tokens and sensitive keys
