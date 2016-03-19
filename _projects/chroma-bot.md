@@ -19,17 +19,5 @@ You can check out sources on the GitHub [repository](https://github.com/Otann/ch
 
 Here is the list of posts from the series about the bot:
 
-* ### [Episode 02. Chroma Bot Landing Page](/web-fandango/chroma-bot-1/)
-  * How to start a Clojure application from a template
-  * How to set the project's external dependencies
-  * What are namespaces and how to use them
-  * How to run an application locally
-  * How to generate and serve an HTML page using Clojure data structures
-  * How to deploy an app to Heroku
-
-* ### [Episode 03. Chroma Bot Telegram API](web-fandango/chroma-bot-telegram-api/)
-  * How to make an HTTP request and deal with a response
-  * How to wrap the Telegram API in Clojure functions
-  * What are two basic concurrency models
-  * How to implement a long-polling using `core.async`
-  * How to load and store secret tokens and sensitive keys
+* [Episode 02. Chroma Bot Landing Page](/web-fandango/chroma-bot-1/)
+* [Episode 03. Chroma Bot Telegram API](web-fandango/chroma-bot-telegram-api/)
