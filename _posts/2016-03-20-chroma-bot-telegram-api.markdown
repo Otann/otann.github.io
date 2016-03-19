@@ -4,17 +4,17 @@ comments: true
 sharable: true
 category: Web-Fandango
 
-date:   2016-03-13 00:00:00 +0300
+date:   2016-03-20 00:00:00 +0300
 title:  Episode 03. Telegram Bot API
-image:  /media/posts/2016-03-15-chroma-bot-telegram-api/header.jpg
+image:  /media/posts/2016-03-20-chroma-bot-telegram-api/header.jpg
 description: >
-  In this episode we will connect Clojure application to Telegram
-  via long-polling with help of core.async
+  In this episode, we will connect Clojure application to Telegram via
+  long-polling approach with the help of core.async
 ---
 
 Hello, dear fellows!
 
-Welcome to third episode of Web Fandango series, where we build simple and awesome projects in Clojure. In the last episode, we made a simple web service with a landing page for Chroma Bot. You can check out where we stopped on the previous episode at GitHub repo  [otann/chroma-bot:episode-02](https://github.com/Otann/chroma-bot/tree/episode-02)
+Welcome to third episode of Web Fandango series, where we build simple and awesome projects in Clojure. In the [previous episode](/web-fandango/chroma-bot-1/) we made a simple web service with a landing page for Chroma Bot. You can check out where we stopped on the previous episode at GitHub repo  [otann/chroma-bot:episode-02](https://github.com/Otann/chroma-bot/tree/episode-02)
 
 Today we follow previously sketched plan and after the landing and deploy works, let's connect the bot to Telegram. As you can see in their [Bot API Documentation](https://core.telegram.org/bots/api), we should make HTTP calls on provided endpoint to receive new messages from users. To do that let's implement some wrappers for Telegram API.
 
@@ -41,7 +41,7 @@ Start by adding `api.clj` file there with the following content. Let's do a name
 (def token (atom nil))            
 ```
 
-What is an atom? It's a box for variadic things, which you can use for state management. They are incredibly helpful when dealing with concurrent operations because they guarantee that no two threads will access their value at the same time. And they are very straightforward. There are only three things you can do with atoms:
+What is an atom? It's a box for data that changes over time, which you can use for state management. They are incredibly helpful when dealing with concurrent operations because they guarantee that no two threads will access their value at the same time. And they are very straightforward. There are only three things you can do with atoms:
 
 * `deref`erence them to get their value
 * `swap!` to apply a function to a value and receive a result
@@ -52,9 +52,9 @@ Here is some example from the REPL:
 ```clojure
 user=> (def n (atom 0))
 #'user/n
-user=> (deref n)
+user=> (deref n) ; returns you value stored in atom
 0
-user=> @n
+user=> @n ; shorthand version of deref
 0
 user=> (reset! n 100)
 100
@@ -149,7 +149,7 @@ It's like two definitions by the price of one! Function with the arity of two ca
 
 ## Do infinite loop
 
-Now having a way to get updates in our code, we should implement infinite loop where we will do it.
+Now having a way to get recent messages from users, we want to find a way to react to them immediately as they arrive. For that we would implement an infinite loop where we will poll API and check if there is anything unanswered.
 
 Create a file `polling.clj` in `telegram` namespace, where we are going to implement this. Start with `ns` definition:
 
@@ -177,7 +177,7 @@ I am not in the mood for taming threads manually today and would prefer a good a
 
 Since Clojure is a deeply functional language, it is no surprise that we would use SCP approach today. The library for that is `core.async`. Its main concept is *channel*. Imagine it as a virtual place where data flows from one end to another, like a conveyor belt or a queue. You put data to one side and pull from the other:
 
-<img src="/media/posts/2016-03-15-chroma-bot-telegram-api/channel.png" width="300px"/>
+<img src="/media/posts/2016-03-20-chroma-bot-telegram-api/channel.png" width="300px"/>
 
 This is a very convenient concept to reason about, because you can logically separate consuming and producing data in your code.
 
@@ -193,7 +193,7 @@ I advise using parked threads unless there is real need for real ones.
 
 If you imagine yourself as a consumer, your job is to ask channel if it has any data that you could process and wait until it does.
 
-<img src="/media/posts/2016-03-15-chroma-bot-telegram-api/consumers.png" width="300px"/>
+<img src="/media/posts/2016-03-20-chroma-bot-telegram-api/consumers.png" width="300px"/>
 
 So imagine we have a channel called `updates`, where updates from Telegram would appear and a function `handle` that processes them. Here is how we can do the infinite loop trick for consumer side:
 
@@ -212,9 +212,9 @@ That will make an infinite loop for handling messages.
 
 Now, how would we populate this channel with data? As consumers, producers also care just for their end of the conveyor belt:
 
-<img src="/media/posts/2016-03-15-chroma-bot-telegram-api/producers.png" width="300px"/>
+<img src="/media/posts/2016-03-20-chroma-bot-telegram-api/producers.png" width="300px"/>
 
-For producing messages, we would need the same kind of a `loop` expression, that will verify if it should be `running` and if so, call `recur`. But here is the difference with consuming — HTTP call that checks updates will hang till there is new data on the Telegram server. It will be a very unpleasant thing to do, if we block consistently part of the shared thread pool, which others rely on. So here we have a genuine need for using real dedicated Java thread. Therefore we use `>!!` operation for pushing data into the channel.
+For producing messages, we would need the same kind of a `loop` expression, that will verify if it should be `running` and if so, call `recur`. But here is the difference with consuming — HTTP call that checks updates will hang till there is new data on the Telegram server. There is a pool of threads that is shared among all operations described in *go*-blocks. It will be a very unpleasant thing to do, if we occupy consistently part of that shared thread pool, which others rely on. So here we have a genuine need for using real dedicated Java thread. Therefore we use `>!!` operation for pushing data into the channel.
 
 ```clojure
 (thread (loop [offset 0]
@@ -312,7 +312,7 @@ If we want to externalize behavior of our bot from a Telegram communication, we 
       (try
         (handler update)
         (catch Exception e
-          (log/error e "Got error in on of the handlers:"))))))
+          (log/error e "Got error in one of the handlers:"))))))
 ```
 
 * `^:private` is a way of making a symbol visible inside its namespace only. Since handlers is a state, we want to be careful and keep to ourselves.
@@ -340,7 +340,7 @@ Add file `core.clj` to your `telegram` namespace:
   [{:keys [token handlers polling]}]
   (if token
     (reset! api/token token)
-    (throw (Exception. "Can't intialize Telegram without a token")))
+    (throw (Exception. "Can't initialize Telegram without a token")))
 
   (if (seq handlers) (h/reset-handlers! handlers))
   (if polling (polling/start!)))
@@ -361,12 +361,12 @@ If you are not a Telegram user yet, got to [Telegram.org](https://telegram.org/)
 Type there `/newbot` to start bot creation process:
 
 <!-- this is my retina screenshot, so we force width here -->
-<img src="/media/posts/2016-03-15-chroma-bot-telegram-api/botfather-1.png" width="538px"/>
+<img src="/media/posts/2016-03-20-chroma-bot-telegram-api/botfather-1.png" width="538px"/>
 
 Work through the all necessary steps to create your bot until you get something like this:
 
 <!-- this is my retina screenshot, so we force width here -->
-<img src="/media/posts/2016-03-15-chroma-bot-telegram-api/botfather-2.png" width="512px"/>
+<img src="/media/posts/2016-03-20-chroma-bot-telegram-api/botfather-2.png" width="512px"/>
 
 Note the token Botfather gave to you, because we will need it in a moment. Add `:telegram-token` to your configuration in `main.clj`, so the whole thing will look like this:
 
@@ -422,7 +422,7 @@ Here is updated content of `main.clj`:
   "Handles update object that the bot received from a Telegram API"
   [update]
   (when-let [message (:message update)]
-    (api/send-message (-> update :message :chat :id)
+    (api/send-message (-> message :chat :id)
                       (str "Hi there! 😊"))))
 
 (defn init []
@@ -439,9 +439,8 @@ Here is updated content of `main.clj`:
     (init)))
 
 (defn -main [& args]
-
   (cfg/populate-from-env)
-  (cfg/verify :quit-on-error true)
+  (init)
   (log/info "Starting server")
   (run-jetty app {:port (cfg/get :port) :join? false}))  
 ```
@@ -473,7 +472,7 @@ By the way, if you don't want `ring-plugin` to open a browser for you, use follo
 Then start conversation with your bot in telegram:
 
 <!-- this is my retina screenshot, so we force width here -->
-<img src="/media/posts/2016-03-15-chroma-bot-telegram-api/chroma-bot-alive.png" width="463px"/>
+<img src="/media/posts/2016-03-20-chroma-bot-telegram-api/chroma-bot-alive.png" width="463px"/>
 
 ## It's alive!
 
@@ -481,6 +480,6 @@ Congratulations! You now can have your personal bot in Telegram. That is fantast
 
 And because you already know some Clojure, you can teach your bot to do all kinds of fun stuff on your own, but here we are going to add some colors to it.
 
-Unfortunately, that would be it for this episode. I hope you had a great time following through and excited about learning a couple of new things today.
+Unfortunately, that would be it for this episode. I hope you had a great time following through and excited about learning a couple of new things today. Check out complete code for this episode on Github: [otann/chroma-bot:episode-03](https://github.com/Otann/chroma-bot/tree/episode-03)
 
 If you enjoyed it, press like button or share this post with your friends. I hope to see you again in the next episode, bye!
