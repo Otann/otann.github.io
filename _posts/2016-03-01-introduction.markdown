@@ -5,7 +5,7 @@ sharable: true
 category: Web-Fandango
 
 date:   2016-03-01 00:00:00 +0300
-title:  Introduction
+title:  Episode 00. Introduction
 image:  /media/posts/2016-03-01-introduction/header.jpg
 description: >
   I am starting a series of posts to share the pleasure of mine of fooling around with web technologies.
