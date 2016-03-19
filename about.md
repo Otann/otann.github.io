@@ -2,6 +2,7 @@
 layout: page
 title: About
 permalink: /about/
+order: 100
 ---
 
 <img src="/media/avatar.jpg" style="float: right; margin: 0 0 1em 1em;" width="30%"/>
