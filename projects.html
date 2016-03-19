@@ -1,0 +1,33 @@
+---
+layout: page
+comments: true
+sharable: true
+
+title: Projects
+permalink: /projects/
+order: 1
+
+description: >
+  List of my projects, including small ones, that were implemented for Web Fandango series.
+---
+
+
+<div class="home">
+  <ul class="post-list">
+
+    <p style="padding-bottom: 2em;">
+      Here is list of my projects, including small ones, that were implemented for Web Fandango series:
+    </p>
+
+    {% for project in site.projects %}
+    <li>
+      <h2>
+        <a class="post-link" href="{{ project.url | prepend: site.baseurl }}">
+          {{ project.title }}
+        </a>
+      </h2>
+      {{ project.description }}
+    </li>
+    {% endfor %}
+  </div>
+</div>

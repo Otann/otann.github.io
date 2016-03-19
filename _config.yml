@@ -17,6 +17,12 @@ url: "http://otann.com" # the base hostname & protocol for your site
 twitter_username: otann_anton
 github_username:  otann
 
+collections:
+  projects:
+    layout: page
+    output: true
+    permalink: /projects/:path/
+
 # Build settings
 markdown: kramdown
 
