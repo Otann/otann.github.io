@@ -34,9 +34,9 @@ First, we are going to need a landing page for our bot, just a simple one that w
 
 Then we will need our app to connect to Telegram and process everything that users send to it. There are two ways of doing so, as it [official documentation](https://core.telegram.org/bots/api#getting-updates) says:
 
-* we provide a public HTTP endpoint, which Telegram will provide latest unprocessed messages from users. It is ideal for a remotely deployed application, but can be tricky for local development, because people usually don't have a public address for their machine and sit behind a router.
+We either provide a public HTTP endpoint, which Telegram will provide latest unprocessed messages from users. It is ideal for a remotely deployed application, but can be tricky for local development, because people usually don't have a public address for their machine and sit behind a router.
 
-* we perform long-polling of Telegram server. That means a continuous calling and waiting on the HTTP endpoint to receive information about messages sent to our bot and then making the same call again. This way is perfect for debugging and testing from a local machine.
+Or we perform long-polling of Telegram server. That means a continuous calling and waiting on the HTTP endpoint to receive information about messages sent to our bot and then making the same call again. This way is perfect for debugging and testing from a local machine.
 
 So we'll need some abstraction to make an infinite loop of remote calls, process the answers but still be able to serve our landing page.
 
@@ -74,10 +74,10 @@ This template lays a fine file structure for you:
 
     6 directories, 5 files
 
-* `README.md` is a file that will describe your project and GitHub will render it nicely for you on the project page. I'm leaving this completely up to your imagination.
-* `resources` is for static resources of your application, like CSS styles for web pages or image assets
-* `src` hold your sources either in Clojure or ClojureScript
-* `test` is as you might guess, for unit tests
+`README.md` is a file that will describe your project and GitHub will render it nicely for you on the project page. I'm leaving this completely up to your imagination.  
+`resources` is for static resources of your application, like CSS styles for web pages or image assets  
+`src` hold your sources either in Clojure or ClojureScript  
+`test` is as you might guess, for unit tests  
 
 Firstly, check out `handler.clj` file:
 
@@ -97,19 +97,19 @@ Firstly, check out `handler.clj` file:
 
 Here is one new concept that we haven't covered in previous post about Clojure &mdash; namespaces. It helps to divide code into logical blocks, like modules in Ruby or packages in Node. If you are familiar with those, this declaration should be intuitive for you:
 
-* `(ns chroma-bot.handler)` tells that this file contains namespace called **chroma-bot.handler**. It is considered a best practice if file structure duplicates namespace structure.
-* `:require` expression tells what to load from other namespaces and how to refer to those things:
-
-  * `[namespace.foo :refer [a-function]]` will load `a-function` symbol, which we can use directly, like `wrap-defaults` from the code.
-  * `[namespace.bar :as bar]` will load all symbols from `namespace.bar` and we will be able to refer to them with `bar/` prefix, like `route/not-found` from the example above.
-  * You can also mix `:refer` and `:as` in a single require statement.
+`(ns chroma-bot.handler)` tells that this file contains namespace called `chroma-bot.handler`.{% sidenote 1 "It is considered a best practice if file structure duplicates namespace structure." %}
+`:require` expression tells what to load from other namespaces and how to refer to those things:
+`[namespace.foo :refer [a-function]]` will load `a-function` symbol, which we can use directly, like `wrap-defaults` from the code.
+`[namespace.bar :as bar]` will load all symbols from `namespace.bar` and we will be able to refer to them with `bar/` prefix, like `route/not-found` from the example above.
+You can also mix `:refer` and `:as` in a single require statement.
 
 That should give you a brief understanding of how to use namespaces. If you want to have a deeper understanding, try [this chapter](http://www.braveclojure.com/organization/) of Clojure for the Brave and True.
 
 Now, what about the code?
 
-* `defroutes` defines routes ;) Seriously, it creates a structure that describes how to react for particular endpoints and gives it a name `app-routes`. There are two endpoints inside, *Hello world* response for root and *Not found* for everything else. That is certainly a very simple example, but look how elegant it looks!
-* `def app` defines new symbol, which is `app-routes` covered with middleware, which as [docs](https://github.com/ring-clojure/ring-defaults#basic-usage) says *"add support for parameters, cookies, sessions, static resources, file uploads, and a bunch of browser-specific security headers"*
+`defroutes` defines routes ;) Seriously, it creates a structure that describes how to react for particular endpoints and gives it a name `app-routes`. There are two endpoints inside, *Hello world* response for root and *Not found* for everything else. That is certainly a very simple example, but look how elegant it looks!
+
+`def app` defines new symbol, which is `app-routes` covered with middleware, which as [docs](https://github.com/ring-clojure/ring-defaults#basic-usage) says *"add support for parameters, cookies, sessions, static resources, file uploads, and a bunch of browser-specific security headers"*
 
 Here is how this code would look like in Node.js using Express.js:
 
@@ -184,12 +184,17 @@ Let's add some things here that we will need:
                [hiccup "1.0.5"]]
 ```
 
-* [`ring`](https://github.com/ring-clojure/ring) is an HTTP abstraction for Clojure. As the documentation says, it is *inspired by Python's WSGI and Ruby's Rack*. There is a server that runs, functions that processes requests and middleware that does jobs like logging errors or converting the request to various formats depending on the content-type header.
-* [`compojure`](https://github.com/weavejester/compojure) is a routing library that helps you tremendously to define functions in a modular way for different endpoints and compose them into single ring-compatible one.
-* [`hiccup`](https://github.com/weavejester/hiccup) is a library for HTML generation straight from the code, which we'll use for landing page.
-* [`core.async`](https://github.com/clojure/core.async) is a concurrency abstraction, based on the idea of channels, also known as [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes). It will help us to talk to Telegram API on a local machine using long-polling.
-* [`timbre`](https://github.com/ptaoussanis/timbre) is a gorgeous logging library, that beautifully renders exception and works perfectly for both server and client-side code. It will add some beauty to our printing of technical info to console.
-* [`omniconf`](https://github.com/grammarly/omniconf) is a fabulous library be Grammarly to manage a configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
+[`ring`](https://github.com/ring-clojure/ring) is an HTTP abstraction for Clojure. As the documentation says, it is *inspired by Python's WSGI and Ruby's Rack*. There is a server that runs, functions that processes requests and middleware that does jobs like logging errors or converting the request to various formats depending on the content-type header.
+
+[`compojure`](https://github.com/weavejester/compojure) is a routing library that helps you tremendously to define functions in a modular way for different endpoints and compose them into single ring-compatible one.
+
+[`hiccup`](https://github.com/weavejester/hiccup) is a library for HTML generation straight from the code, which we'll use for landing page.
+
+[`core.async`](https://github.com/clojure/core.async) is a concurrency abstraction, based on the idea of channels, also known as [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes). It will help us to talk to Telegram API on a local machine using long-polling.
+
+[`timbre`](https://github.com/ptaoussanis/timbre) is a gorgeous logging library, that beautifully renders exception and works perfectly for both server and client-side code. It will add some beauty to our printing of technical info to console.
+
+[`omniconf`](https://github.com/grammarly/omniconf) is a fabulous library be Grammarly to manage a configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
 
 ## Make it pretty
 
@@ -313,11 +318,11 @@ Create a `main.clj` file in `chroma_bot` folder with the following content:
 
 Here is what is does:
 
-* `(:gen-class)` tells Leiningen to generate *Java class* from his namespace, which acts as an entry point for the `.jar`-packaged application.
+`(:gen-class)` tells Leiningen to generate *Java class* from his namespace, which acts as an entry point for the `.jar`-packaged application.
 
-* `cfg/define` describes configuration structure for our application. We start with only one parameter &mdash; a port on which Heroku will run our app. They will provide a value for us through environment variable `PORT` which `omniconf` will pull automatically, based on `:port` name that we gave it as a key.
+`cfg/define` describes configuration structure for our application. We start with only one parameter &mdash; a port on which Heroku will run our app. They will provide a value for us through environment variable `PORT` which `omniconf` will pull automatically, based on `:port` name that we gave it as a key.
 
-* `-main` is the conventional name for a method that will be called when the Java class will be called from command line. In that method we call `cfg/populate-from-env` function to pull configuration from environment variables, then validate it with `(cfg/verify :quit-on-error true)`. After that we log simple message that our server has started and, well, start an HTTP server, providing it our template-generated routes by calling `run-jetty`.
+`-main` is the conventional name for a method that will be called when the Java class will be called from command line. In that method we call `cfg/populate-from-env` function to pull configuration from environment variables, then validate it with `(cfg/verify :quit-on-error true)`. After that we log simple message that our server has started and, well, start an HTTP server, providing it our template-generated routes by calling `run-jetty`.
 
 Now let's provide instruction for Leiningen about how to run packaged application. Change `profiles` section in the `project.clj` file to look like this:
 

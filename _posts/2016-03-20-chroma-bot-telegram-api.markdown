@@ -3,6 +3,7 @@ layout:   post
 comments: true
 sharable: true
 category: Web-Fandango
+author: Anton Chebotaev
 
 date:   2016-03-20 00:00:00 +0300
 title:  Episode 03. Telegram Bot API
@@ -20,10 +21,7 @@ Today we follow previously sketched plan and after the landing and deploy works,
 
 ## Wrap Telegram API
 
-Add `[clj-http "2.0.0"]` and `[cheshire "5.5.0"]` to your project dependencies in `project.clj` file.
-
-* [`clj-http`](https://github.com/dakrone/clj-http) is a library for making external HTTP calls
-* [`cheshire`](https://github.com/dakrone/cheshire) parses and constructs JSON data from Clojure structures
+Add `[clj-http "2.0.0"]`{% sidenote 1 "[`clj-http`](https://github.com/dakrone/clj-http) is a library for making external HTTP calls and [`cheshire`](https://github.com/dakrone/cheshire) parses and constructs JSON data from Clojure structures" %} and `[cheshire "5.5.0"]` to your project dependencies in `project.clj` file.
 
 Then create `telegram` folder in your source `src` directory, which will be a home namespace for all our Telegram related code.
 
@@ -41,11 +39,7 @@ Start by adding `api.clj` file there with the following content. Let's do a name
 (def token (atom nil))            
 ```
 
-What is an atom? It's a box for data that changes over time, which you can use for state management. They are incredibly helpful when dealing with concurrent operations because they guarantee that no two threads will access their value at the same time. And they are very straightforward. There are only three things you can do with atoms:
-
-* `deref`erence them to get their value
-* `swap!` to apply a function to a value and receive a result
-* `reset!` to completely replace old value with your new one
+What is an atom? It's a box for data that changes over time, which you can use for state management. They are incredibly helpful when dealing with concurrent operations because they guarantee that no two threads will access their value at the same time. And they are very straightforward. There are only three things you can do with atoms: `deref`erence them to get their value, `swap!` to apply a function to a value and receive a result and `reset!` to completely replace old value with your new one
 
 Here is some example from the REPL:
 
@@ -81,7 +75,7 @@ We will fill value for `token` atom later, in the function responsible for initi
 This function receives one argument and expects it to be a map with following keys: `[limit offset timeout]`. This thing is called destructuring, which I explained briefly [a couple of episodes ago](web-fandango/clojure-kickoff/). So this definition presumes that it one will call this function like this:
 
 ```clojure
-(get updates {:limit 10
+(get-updates {:limit 10
               :offset 0
               :timeout 100})
 ```
@@ -90,9 +84,11 @@ If some of the keys will be omitted, then corresponding symbol inside method def
 
 Then there is `let` expression that declares some intermediary stuff:
 
-* `url (str base-url @token "/getUpdates")` declares a new symbol `url` that is string concatenation of `base-url`, Telegram token and method that we should use to get updates
-* `query` defines map with same values as method parameters but adds defaults if parameters are missing
-* `resp` is a result of calling (http/get ...) function that will make an HTTP request and return a map with the response from remote server. We also ask to interpret the response as JSON and, therefore, coerce it to standard Clojure map.
+`url (str base-url @token "/getUpdates")` declares a new symbol `url` that is string concatenation of `base-url`, Telegram token and method that we should use to get updates
+
+`query` defines map with same values as method parameters but adds defaults if parameters are missing
+
+`resp` is a result of calling (http/get ...) function that will make an HTTP request and return a map with the response from remote server. We also ask to interpret the response as JSON and, therefore, coerce it to standard Clojure map.
 
 What does the `->` arrow means? It is a handy way of writing multiple functions that call each other. Instead of this clumsy way for getting something deep from a map:
 
@@ -165,15 +161,15 @@ Now, let's talk about concurrency a little bit because there are no infinite loo
 
 I am not in the mood for taming threads manually today and would prefer a good abstraction for that matter. There are two major classes: [actors](https://en.wikipedia.org/wiki/Actor_model) and [communicating sequential processes](https://en.wikipedia.org/wiki/Communicating_sequential_processes). They both utilise an idea of passing messages between independent entities:
 
-* **Actors** are more OOP-like. You focus on actors, define their purpose of life (like class) and how they react to messages (like methods). And they also have a state, like instances.
-  * **pro:** You can easily put different actors on different network nodes and scale in quantities since they process messages independently of each other
-  * **con:** You have to keep an eye on message queues not to overflow, because processes of sending and receiving messages are not tied together.
-  * **con:** Actors exchange messages with each other directly, so they are logically tightly coupled to each other because they have to keep in mind each other's roles.
+_Actors_ are more OOP-like. You focus on actors, define their purpose of life (like class) and how they react to messages (like methods). And they also have a state, like instances.
+  **(pro)** You can easily put different actors on different network nodes and scale in quantities since they process messages independently of each other.
+  **(con)** You have to keep an eye on message queues not to overflow, because processes of sending and receiving messages are not tied together.
+  **(con)** Actors exchange messages with each other directly, so they are logically tightly coupled to each other because they have to keep in mind each other's roles.
 
-* **SCP** is functional-like approach. You focus on message queues. You define channel's role like you define a function, it should receive things of one sort and return the other.
-  * **pro:** Emitters and receivers of messages knows only about message queue purpose, so they are loosely coupled together.
-  * **con:** Often processes should wait for rendezvous to happen to continue their work. Putting or pulling messages will block execution until other side processes or provides a message. In that way, you don't have to worry about overflows of messages.
-  * **con:**  That rendezvous could give you troubles on scaling your system physically.
+_SCP_ is functional-like approach. You focus on message queues. You define channel's role like you define a function, it should receive things of one sort and return the other.
+  **(pro)** Emitters and receivers of messages knows only about message queue purpose, so they are loosely coupled together.
+  **(con)** Often processes should wait for rendezvous to happen to continue their work. Putting or pulling messages will block execution until other side processes or provides a message. In that way, you don't have to worry about overflows of messages.
+  **(con)**  That rendezvous could give you troubles on scaling your system physically.
 
 Since Clojure is a deeply functional language, it is no surprise that we would use SCP approach today. The library for that is `core.async`. Its main concept is *channel*. Imagine it as a virtual place where data flows from one end to another, like a conveyor belt or a queue. You put data to one side and pull from the other:
 
@@ -181,11 +177,7 @@ Since Clojure is a deeply functional language, it is no surprise that we would u
 
 This is a very convenient concept to reason about, because you can logically separate consuming and producing data in your code.
 
-There are two flavors of threads when working with channels: using real and parked ones.
-
- * Real threads are wrapped around Java primitives and ways of blocking
- * Parked ones are modeled after Go threading model.
-   If you choose to work with parked threads, then you should wrap communications with channels into `go` expression.
+There are two flavors of threads when working with channels: using real and parked ones. _Real_ threads are wrapped around Java primitives and ways of blocking _Parked_ ones are modeled after Go threading model. If you choose to work with parked threads, then you should wrap communications with channels into `go` expression.
 
 I advise using parked threads unless there is real need for real ones.
 
@@ -203,8 +195,9 @@ So imagine we have a channel called `updates`, where updates from Telegram would
       (if running (recur))))
 ```
 
-* `(<! updates)` pulls a new message from the channel. If there are no messages, thread that is performing this operation within `go` expression will be parked, and dedicated thread pool will carry out some other *go-routine*.
-* `(if running (recur))` checks some previously declared state that marks if the process should continue and if so, calls `recur`, which means that expression within `loop` will be executed again.
+`(<! updates)` pulls a new message from the channel. If there are no messages, thread that is performing this operation within `go` expression will be parked, and dedicated thread pool will carry out some other *go-routine*.
+
+`(if running (recur))` checks some previously declared state that marks if the process should continue and if so, calls `recur`, which means that expression within `loop` will be executed again.
 
 That will make an infinite loop for handling messages.
 
@@ -214,7 +207,7 @@ Now, how would we populate this channel with data? As consumers, producers also 
 
 <img src="/media/posts/2016-03-20-chroma-bot-telegram-api/producers.png" width="300px"/>
 
-For producing messages, we would need the same kind of a `loop` expression, that will verify if it should be `running` and if so, call `recur`. But here is the difference with consuming — HTTP call that checks updates will hang till there is new data on the Telegram server. There is a pool of threads that is shared among all operations described in *go*-blocks. It will be a very unpleasant thing to do, if we occupy consistently part of that shared thread pool, which others rely on. So here we have a genuine need for using real dedicated Java thread. Therefore we use `>!!` operation for pushing data into the channel.
+For producing messages, we would need the same kind of a `loop` expression, that will verify if it should be `running` and if so, call `recur`. But here is the difference with consuming — HTTP call that checks updates will hang till there is new data on the Telegram server. There is a pool of threads that is shared among all operations described in _go_-blocks. It will be a very unpleasant thing to do, if we occupy consistently part of that shared thread pool, which others rely on. So here we have a genuine need for using real dedicated Java thread. Therefore we use `>!!` operation for pushing data into the channel.
 
 ```clojure
 (thread (loop [offset 0]
@@ -226,10 +219,13 @@ For producing messages, we would need the same kind of a `loop` expression, that
             (if running (recur new-offset)))))
 ```
 
-* Here instead of `go` you see `thread`. That starts a new thread that will execute expression passed as an argument untill it finishes. After that thread will be disposed.
-* `loop` here declares a binding: `offset` symbol with initial value 0. When later this loop will be called again with `recur`, offset symbol will be equal to parameter that was passed to `recur`
-* We use this technique to increase offsets of the query gradually, as [Telegram documentation](https://core.telegram.org/bots/api#getupdates) suggest. Initial offset equals zero, but for subsequent calls, we choose new offset as an incremented id of the last received message.
-* `doseq` means *do for sequence* and in same way as `map` does, but with a neat binding that improves readability
+Here instead of `go` you see `thread`. That starts a new thread that will execute expression passed as an argument untill it finishes. After that thread will be disposed.
+
+`loop` here declares a binding: `offset` symbol with initial value 0. When later this loop will be called again with `recur`, offset symbol will be equal to parameter that was passed to `recur`
+
+We use this technique to increase offsets of the query gradually, as [Telegram documentation](https://core.telegram.org/bots/api#getupdates) suggest. Initial offset equals zero, but for subsequent calls, we choose new offset as an incremented id of the last received message.
+
+`doseq` means _do for sequence_ and in same way as `map` does, but with a neat binding that improves readability
 
 Now you can see that there are a couple of things (`running` and `updates`) that represent the state and will be used by multiple threads. They are perfect spots for using atoms.
 
@@ -315,11 +311,15 @@ If we want to externalize behavior of our bot from a Telegram communication, we 
           (log/error e "Got error in one of the handlers:"))))))
 ```
 
-* `^:private` is a way of making a symbol visible inside its namespace only. Since handlers is a state, we want to be careful and keep to ourselves.
-* `handlers` is an atom that holds list and `add-handler!` and `reset-handlers!` are public functions that add and remove handlers from that list
-* what's up with the exclamation marks, do they add specific behavior? No! But it's a beautiful part of a convention to indicate that this method operates on the state. The Similar thing is to use question marks at the end of the name for boolean predicates, like `empty?`
-* `handle` is function that we planned on using before in the polling loop
-* `try` checks that whatever happens inside the handler provided from the outside will not ruin running thread with an exception.
+`^:private` is a way of making a symbol visible inside its namespace only. Since handlers is a state, we want to be careful and keep to ourselves.
+
+`handlers` is an atom that holds list and `add-handler!` and `reset-handlers!` are public functions that add and remove handlers from that list
+
+what's up with the exclamation marks, do they add specific behavior? No! But it's a beautiful part of a convention to indicate that this method operates on the state. The Similar thing is to use question marks at the end of the name for boolean predicates, like `empty?`
+
+`handle` is function that we planned on using before in the polling loop
+
+`try` checks that whatever happens inside the handler provided from the outside will not ruin running thread with an exception.
 
 ## Wrap it up
 
@@ -445,12 +445,12 @@ Here is updated content of `main.clj`:
   (run-jetty app {:port (cfg/get :port) :join? false}))  
 ```
 
-* YES! Clojure can work with emojis! 👍
-* `handler` is dumb function that will send the same reply for every incoming message
-* now `-main` and `ring-init` will both call `init` to will start Telegram API, including long polling
-* `ring-init` also checks if there is `dev-config.edn` file in your project root folder and if there is one, reads configuration from it
+Few things to notice: Yes, Clojure can work with emojis 👍
+Simple function called `handler` will send the same reply for every incoming message.
+Now `-main` and `ring-init` will both call `init` to will start Telegram API, including long polling.
+Funtion `ring-init` also checks if there is `dev-config.edn` file in your project root folder and if there is one, reads configuration from it.
 
-One last little thing: add mentioned above `dev-config.edn` line to your `.gitignore` file and never, **never ever**, commit your tokens to the repository.
+One last little thing: add mentioned above `dev-config.edn` line to your `.gitignore` file and never, _never ever_, commit your tokens to the repository.
 
 Only after you done that, create `dev-config.edn` with following content:
 
@@ -459,7 +459,7 @@ Only after you done that, create `dev-config.edn` with following content:
  :telegram-token "PLACE YOUR ACTUAL TOKEN HERE, SERIOUSLY, DON'T FORGET TO GITIGNORE THIS FILE"}
 ```
 
-Yes, this is Clojure data, *A superset of [edn](https://github.com/edn-format/edn) format is used by Clojure to represent programs* (as docs say), so it looks unsurprisingly like Clojure data structures.
+Yes, this is Clojure data, _A superset of [edn](https://github.com/edn-format/edn) format is used by Clojure to represent programs_ (as docs say), so it looks unsurprisingly like Clojure data structures.
 
 Now finally you can start your bot with
 

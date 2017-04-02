@@ -11,23 +11,14 @@ description: >
   Check out some projects, done by me, including small ones from Web Fandango series.
 ---
 
+<p>Here are some materials about projects I've built, grouped by the projects:</p>
 
-<div class="home">
-  <ul class="post-list">
+{% for project in site.projects %}
+<h2>
+  <a class="post-link" href="{{ project.url | prepend: site.baseurl }}">
+    {{ project.title }}
+  </a>
+</h2>
+<p>{{ project.description }}</p>
+{% endfor %}
 
-    <p style="padding-bottom: 2em;">
-      Here are some materials about projects I've built, grouped by the projects:
-    </p>
-
-    {% for project in site.projects %}
-    <li>
-      <h2>
-        <a class="post-link" href="{{ project.url | prepend: site.baseurl }}">
-          {{ project.title }}
-        </a>
-      </h2>
-      {{ project.description }}
-    </li>
-    {% endfor %}
-  </div>
-</div>
