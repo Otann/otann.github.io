@@ -6,7 +6,7 @@ sharable: true
 title:  Chroma Bot
 image:  /media/projects/chroma-bot/header.jpg
 description: >
-  Here I tell how to implement a dead simple bot for Telegram that detects colors in messages in hex form, like #dc322f, and sends back a picture filled with that color.
+  I explain how to implement a dead simple bot for Telegram that detects colors in messages in hex form, like #dc322f, and sends back a picture filled with that color.
 ---
 
 This project is a dead simple bot for Telegram that detects colors in messages in hex form (like `#dc322f`) and sends back a picture filled with that color.

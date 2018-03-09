@@ -1,6 +1,7 @@
 ---
 layout: default
-image:  /media/logo.png
+index: true
+image: /media/logo.png
 description: Tain't what you do, it's the way that you do it
 ---
 
@@ -13,12 +14,10 @@ description: Tain't what you do, it's the way that you do it
       <li>
         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
+        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
             {{ post.categories|first|replace:'-',' '|append:', ' }}
             {{ post.title }}
           </a>
-        </h2>
       </li>
     {% endfor %}
   </ul>

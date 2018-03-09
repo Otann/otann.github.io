@@ -16,16 +16,14 @@ description: >
   <ul class="post-list">
 
     <p style="padding-bottom: 2em;">
-      Here are some materials about projects I've built, grouped by the projects:
+      Here are some materials about projects I've built
     </p>
 
     {% for project in site.projects %}
     <li>
-      <h2>
-        <a class="post-link" href="{{ project.url | prepend: site.baseurl }}">
-          {{ project.title }}
-        </a>
-      </h2>
+      <a class="post-link" href="{{ project.url | prepend: site.baseurl }}">
+        {{ project.title }}
+      </a>
       {{ project.description }}
     </li>
     {% endfor %}

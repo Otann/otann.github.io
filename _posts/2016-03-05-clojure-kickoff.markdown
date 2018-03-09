@@ -223,7 +223,7 @@ It's considered to be a good practice to expand function definition to multiple 
   (* x x))
 ```
 
-## Collections
+### Collections
 
 Clojure have all primary collections that we are used to: vectors (arrays), maps (hashes, dictionaries) and sets:
 

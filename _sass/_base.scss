@@ -70,11 +70,11 @@ ul, ol {
 }
 
 li {
-    line-height: 1.7;
-    > ul,
-    > ol {
-         margin-bottom: 0;
-    }
+  line-height: 1.7;
+  > ul,
+  > ol {
+       margin-bottom: 0;
+  }
 }
 
 
@@ -83,10 +83,12 @@ li {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-  padding-top: 1em;
-    font-weight: $base-font-weight;
-    font-family: $header-font-family;
-    a { text-decoration: none; }
+  margin-top: .75em;
+  margin-bottom: .5em;
+  width: auto;
+  font-weight: $base-font-weight;
+  font-family: $header-font-family;
+  a { text-decoration: none; }
 }
 
 
@@ -95,24 +97,24 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
+  color: $brand-color;
+  text-decoration: underline;
+  // text-decoration: none;
+  // font-weight: bold;
+
+  &:visited {
     color: $brand-color;
-    // text-decoration: underline;
-    text-decoration: none;
+  }
+
+  &:hover {
+    color: $text-color;
+    text-decoration: underline;
+  }
+
+  code {
+    color: $brand-color;
     font-weight: bold;
-
-    &:visited {
-        color: $brand-color;
-    }
-
-    &:hover {
-        color: $text-color;
-        text-decoration: underline;
-    }
-
-    code {
-      color: $brand-color;
-      font-weight: bold;
-    }
+  }
 }
 
 
@@ -121,21 +123,20 @@ a {
  * Blockquotes
  */
 blockquote {
-    color: $base02;
-    border-left: 6px solid $brand-color;
-    margin: 1em 0 $spacing-unit / 2 1em;
-    padding-left: $spacing-unit / 2;
-    padding-bottom: .1em;
-    font-size: 1.3em;
-    font-style: italic;
-    letter-spacing: .2px;
-    line-height: 1.3em;
-    font-weight: 300;
-    // line-height: 1.1em;
+  color: $text-color;
+  border-left: 5px solid $complementary-color;
+  margin: 1em 0 $spacing-unit / 2 1em;
+  padding-left: $spacing-unit / 2;
+  padding-bottom: .1em;
+  font-size: 1.3em;
+  font-style: italic;
+  letter-spacing: .2px;
+  line-height: 1.3em;
+  font-weight: 300;
 
-    > :last-child {
-        margin-bottom: 0;
-    }
+  > :last-child {
+      margin-bottom: 0;
+  }
 }
 
 
@@ -145,44 +146,44 @@ blockquote {
  */
 pre,
 code {
-    font-family: $code-font-family;
-    font-weight: normal;
-    line-height: normal;
-    border: 1px solid $background-color;
-    border-radius: 4px;
-    background-color: $base3;
-    color: $base02;
+  font-family: $code-font-family;
+  font-weight: normal;
+  line-height: normal;
+  border: 1px solid $complementary-color;
+  border-radius: 4px;
+  background-color: $background-color;
+  color: $code-color;
 }
 
 code.highlighter-rouge {
-    white-space: nowrap;
-    background-color: #f0f0f0;
+  white-space: nowrap;
+  background-color: $background-color;
 }
 
 code {
-    font-size: $code-font-size;
-    padding: 1px 5px;
+  font-size: $code-font-size;
+  padding: 1px 5px;
 }
 
 pre {
-    margin: 1em 0;
-    padding: 8px 12px;
-    overflow-x: auto;
+  margin: 1em 0;
+  padding: 8px 12px;
+  overflow-x: auto;
 
-    > code {
-        border: 0;
-        padding-right: 0;
-        padding-left: 0;
-    }
+  > code {
+    border: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
 
-    &.lineno, td.code pre {
-      border: 0;
-      padding: 0;
-      margin: 0;
-    }
-    &.lineno {
-      margin-right: 5px;
-    }
+  &.lineno, td.code pre {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  &.lineno {
+    margin-right: 5px;
+  }
 }
 
 
@@ -192,20 +193,20 @@ pre {
  * Wrapper
  */
 .wrapper {
-    max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit} * 2));
-    max-width:         calc(#{$content-width} - (#{$spacing-unit} * 2));
-    margin-right: auto;
-    margin-left: auto;
-    padding-right: $spacing-unit;
-    padding-left: $spacing-unit;
-    @extend %clearfix;
+  max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit} * 2));
+  max-width:         calc(#{$content-width} - (#{$spacing-unit} * 2));
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: $spacing-unit;
+  padding-left: $spacing-unit;
+  @extend %clearfix;
 
-    @include media-query($on-laptop) {
-        max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit}));
-        max-width:         calc(#{$content-width} - (#{$spacing-unit}));
-        padding-right: $spacing-unit / 2;
-        padding-left: $spacing-unit / 2;
-    }
+  @include media-query($on-laptop) {
+    max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit}));
+    max-width:         calc(#{$content-width} - (#{$spacing-unit}));
+    padding-right: $spacing-unit / 2;
+    padding-left: $spacing-unit / 2;
+  }
 }
 
 
@@ -215,11 +216,11 @@ pre {
  */
 %clearfix {
 
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 }
 
 
@@ -229,14 +230,14 @@ pre {
  */
 .icon {
 
-    > svg {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        vertical-align: middle;
+  > svg {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
 
-        path {
-            fill: $grey-color;
-        }
+    path {
+        fill: gray;
     }
+  }
 }

@@ -5,19 +5,16 @@
 
 @import "solarized";
 
-// @import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,600|Roboto:300,400,700|Source+Code+Pro:400,700);
-@import url(https://fonts.googleapis.com/css?family=Fira+Mono:400,700|Roboto+Slab:400,700|Roboto:400,700);
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono:400,500|Lato:400,400i|Permanent+Marker');
+// @import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
 
-$header-font-family: "Roboto Slab", serif;
-$base-font-family:   "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$header-font-family: "Permanent Marker", serif;
+$base-font-family:   "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $code-font-family:   "Fira Mono", monospace;
 
-// Also good one!
-// @import url(https://fonts.googleapis.com/css?family=Bitter|Raleway);
-// $header-font-family: "Bitter";
-// $base-font-family:   "Raleway";
+/* Main variables */
 
-$base-font-size:   110%;
+$base-font-size:   18px;
 $small-font-size:  .8em;
 $code-font-size:   .9em;
 
@@ -26,14 +23,14 @@ $accent-body-weight: 700;
 
 $base-line-height: 1.5;
 
+$text-color:            #0C0E0C; // SMOKY BLACK
+$background-color:      #FFFFFF; // WHITE
 
-$text-color:       $base02;
-$background-color: #fdfdfd; //$base3;
-$brand-color:      $blue;
+$brand-color:           #067BC2; // TEAL BLUE
+$complementary-color:   #F6E56D; // MELLOW YELLOW
 
-$grey-color:       $base0;
-$grey-color-light: $base1;
-$grey-color-dark:  $base01;
+$code-color:            $text-color;
+$code-background-color: #E8E9E8; // PLATINUM
 
 // Width of the content area
 $spacing-unit:     30px;
@@ -61,8 +58,8 @@ $on-laptop:        800px;
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
-        "base",
-        "layout",
-        "syntax-solarized-light"
-        // "syntax-highlighting"
+  "base",
+  "layout",
+  "syntax-highlighting"
 ;
+

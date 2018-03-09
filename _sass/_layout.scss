@@ -2,110 +2,47 @@
  * Site header
  */
 .site-header {
-    min-height: 56px;
+  min-height: 56px;
 
-    // Positioning context for the mobile navigation icon
+  // Positioning context for the mobile navigation icon
+  position: relative;
+
+  a {
+    font-family: $header-font-family;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
     position: relative;
-
-    a {
-      font-weight: normal;
-      text-decoration: none;
-    }
-
-    img {
-      width: 30px;
-      height: 30px;
-      position: relative;
-      top: -4px;
-    }
-
-}
-
-a.site-title {
-  color: $red;
-  font-weight: $accent-body-weight;
-}
-.site-title {
-    font-size: 1.5em;
-    font-weight: $accent-body-weight;
-
-    line-height: 56px;
-    letter-spacing: -1px;
-    margin-bottom: 0;
-    float: left;
-
-    &,
-    &:visited {
-        // color: $grey-color-dark;
-    }
+    top: -4px;
+  }
 }
 
 .site-nav {
-    // float: right;
-    line-height: 56px;
+  font-size: 1.5em;
+  margin-top: .5em;
 
-    .menu-icon {
-        display: none;
+  .page-link {
+    color: $text-color;
+    line-height: $base-line-height;
+
+    &.active {
+      color: black;
+      background-color: yellow;
     }
 
-    .page-link {
-        color: $text-color;
-        line-height: $base-line-height;
-
-        // Gaps between nav items, but not on the last one
-        &:not(:last-child) {
-            margin-right: 20px;
-        }
+    // Gaps between nav items, but not on the last one
+    &:not(:last-child) {
+        margin-right: 20px;
     }
+  }
 
-    @include media-query($on-palm) {
-        position: absolute;
-        top: 9px;
-        right: $spacing-unit / 2;
-        background-color: $background-color;
-        border: 1px solid $grey-color-light;
-        border-radius: 5px;
-        text-align: right;
-
-        .menu-icon {
-            display: block;
-            float: right;
-            width: 36px;
-            height: 26px;
-            line-height: 0;
-            padding-top: 10px;
-            text-align: center;
-
-            > svg {
-                width: 18px;
-                height: 15px;
-
-                path {
-                    fill: $grey-color-dark;
-                }
-            }
-        }
-
-        .trigger {
-            clear: both;
-            display: none;
-        }
-
-        &:hover .trigger {
-            display: block;
-            padding-bottom: 5px;
-        }
-
-        .page-link {
-            display: block;
-            padding: 5px 10px;
-
-            &:not(:last-child) {
-                margin-right: 0;
-            }
-            margin-left: 20px;
-        }
-    }
+  @include media-query($on-palm) {
+      // on mobile devices
+  }
 }
 
 
@@ -130,7 +67,6 @@ a.site-title {
 
 .footer-col-wrapper {
     font-size: 15px;
-    color: $grey-color;
     margin-left: -$spacing-unit / 2;
     @extend %clearfix;
 }
@@ -183,7 +119,7 @@ a.site-title {
  * Page content
  */
 .page-content {
-    padding: $spacing-unit 0;
+    padding: 1rem 0;
 }
 
 .page-heading {
@@ -204,7 +140,6 @@ a.site-title {
     padding-top: .5em;
     margin: 0;
     font-size: $small-font-size;
-    color: $grey-color;
 }
 
 .post-link {
@@ -248,59 +183,67 @@ a.site-title {
       }
 
       h1 {
-        color: #fff;
+        // background-color: $complementary-color;
+        color: $background-color;
       }
 
       .post-meta {
-        color: $base2;
+        font-style: italic;
+        color: $code-background-color;
       }
     }
 }
 
 .post-category {
   font-weight: normal;
-    font-size: 1.3em;
+  font-size: 1.3em;
+  margin-bottom: 0;
 }
 
 .post-title {
-    font-size: 2em;
-    font-weight: bold;
-    letter-spacing: -1px;
-    line-height: 1.4em;
-    padding: 0;
-    margin: 0;
+  font-size: 2.2em;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1.4em;
+  padding: 0;
+  margin: 0;
 
-    @include media-query($on-laptop) {
-        font-size: 36px;
-    }
+  @include media-query($on-laptop) {
+      font-size: 36px;
+  }
 }
 
 .post-content {
     margin-bottom: $spacing-unit;
 
     h2 {
-        font-size: 2.1em;
+        background-color: $complementary-color;
+        font-size: 2.5em;
+        display: inline-block;
+        padding-bottom: .1em;
+        line-height: .4em;
+        // padding-top: -0.5em;
 
-        @include media-query($on-laptop) {
-            font-size: 28px;
-        }
+        // @include media-query($on-laptop) {
+        //     font-size: 28px;
+        // }
     }
 
     h3 {
-        font-size: 1.3em;
+        font-size: 1.8em;
         font-weight: bold;
 
-        @include media-query($on-laptop) {
-            font-size: 22px;
-        }
+        // @include media-query($on-laptop) {
+        //     font-size: 22px;
+        // }
     }
 
     h4 {
         font-size: 1.2em;
 
-        @include media-query($on-laptop) {
-            font-size: 18px;
-        }
+        // @include media-query($on-laptop) {
+        //     font-size: 18px;
+        // }
     }
 
     img {
