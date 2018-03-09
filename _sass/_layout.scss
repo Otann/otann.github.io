@@ -2,7 +2,6 @@
  * Site header
  */
 .site-header {
-    border-bottom: 2px solid $brand-color;
     min-height: 56px;
 
     // Positioning context for the mobile navigation icon
@@ -42,7 +41,7 @@ a.site-title {
 }
 
 .site-nav {
-    float: right;
+    // float: right;
     line-height: 56px;
 
     .menu-icon {
@@ -115,7 +114,6 @@ a.site-title {
  * Site footer
  */
 .site-footer {
-    border-top: 1px solid $grey-color-light;
     padding: $spacing-unit 0;
 }
 

@@ -1,5 +1,5 @@
 ---
-layout:   page
+layout:   project
 comments: true
 sharable: true
 

@@ -6,11 +6,11 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Tain't What You Do
+title: ain't what you do
 email: anton.chebotaev@gmail.com
 description: >
-  'Tain't what you do, it's the way that you do it, <br/>
-  That's what gets results!
+  'tain't what you do, it's the way that you do it, <br/>
+  that's what gets results!
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://otann.com" # the base hostname & protocol for your site
@@ -33,3 +33,10 @@ analytics_id: UA-74210223-1
 
 # Facebook
 facebook_app_id: 1748230372080642
+
+# plugins:
+#   - jekyll-mentions
+#   - jemoji
+#   - jekyll-redirect-from
+#   - jekyll-sitemap
+#   - jekyll-feed

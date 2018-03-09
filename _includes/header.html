@@ -2,11 +2,6 @@
 
   <div class="wrapper">
 
-    <a class="site-title" href="{{ site.baseurl }}/">
-      <img src="/media/favicon-96x96.png"/>
-      {{ site.title }}
-    </a>
-
     <nav class="site-nav">
       <a href="#" class="menu-icon">
         <svg viewBox="0 0 18 15">
@@ -17,10 +12,11 @@
       </a>
 
       <div class="trigger">
+        <a class="page-link" href="/">Blog</a>
         {% assign pages = site.pages | sort:"order"  %}
-        {% for my_page in pages %}
-          {% if my_page.title %}
-          <a class="page-link" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
+        {% for page in pages %}
+          {% if page.title %}
+          <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
           {% endif %}
         {% endfor %}
       </div>
