@@ -9,18 +9,23 @@ description: Tain't what you do, it's the way that you do it
 
   <!-- <h1 class="page-heading">Posts</h1> -->
 
-  <ul class="post-list">
-    {% for post in site.posts %}
+  {% for post in site.posts %}
+    {% assign post_year = post.date | date: "%Y" %}
+    {% if post_year != date %}
+      {% unless forloop.first %}</ul>{% endunless %}
+      <h1 id="y{{post.date | date: "%Y"}}">{{ post_year }}</h1>
+      <ul class="post-list">
+      {% assign date = post_year %}
+    {% endif %}
       <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
         <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
-            {{ post.categories|first|replace:'-',' '|append:', ' }}
-            {{ post.title }}
-          </a>
+          {{ post.categories|first|replace:'-',' '|append:', ' }}
+          {{ post.title }}
+        </a>
+        <span class="post-meta">{{ post.date | date: "%-m/%-d" }}</span>
       </li>
-    {% endfor %}
-  </ul>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
 
   <!-- <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p> -->
 

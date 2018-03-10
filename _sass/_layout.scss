@@ -22,16 +22,19 @@
 }
 
 .site-nav {
-  font-size: 1.5em;
+  font-size: 1.8em;
   margin-top: .5em;
 
   .page-link {
+    display: inline-block;
     color: $text-color;
-    line-height: $base-line-height;
+    // line-height: $base-line-height;
+    line-height: .65em;
+    padding-bottom: .1em;
 
     &.active {
       color: black;
-      background-color: yellow;
+      background-color: $theme-yellow;
     }
 
     // Gaps between nav items, but not on the last one
@@ -137,14 +140,15 @@
 }
 
 .post-meta {
-    padding-top: .5em;
+    padding-left: .5em;
     margin: 0;
     font-size: $small-font-size;
+    opacity: 85%;
 }
 
 .post-link {
-    display: block;
-    font-size: 24px;
+    // display: block;
+    font-size: 1.1em;
 }
 
 
@@ -189,7 +193,7 @@
 
       .post-meta {
         font-style: italic;
-        color: $code-background-color;
+        color: $text-color;
       }
     }
 }
@@ -222,7 +226,7 @@
         display: inline-block;
         padding-bottom: .1em;
         line-height: .4em;
-        // padding-top: -0.5em;
+        color: #1D2224;
 
         // @include media-query($on-laptop) {
         //     font-size: 28px;

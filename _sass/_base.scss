@@ -146,13 +146,14 @@ blockquote {
  */
 pre,
 code {
+  margin: 1em 0;
   font-family: $code-font-family;
   font-weight: normal;
   line-height: normal;
   border: 1px solid $complementary-color;
   border-radius: 4px;
   background-color: $background-color;
-  color: $code-color;
+  color: $text-color;
 }
 
 code.highlighter-rouge {

@@ -2,11 +2,8 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 @charset "utf-8";
-
-@import "solarized";
-
+@import "color-theme";
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono:400,500|Lato:400,400i|Permanent+Marker');
-// @import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
 
 $header-font-family: "Permanent Marker", serif;
 $base-font-family:   "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -23,14 +20,12 @@ $accent-body-weight: 700;
 
 $base-line-height: 1.5;
 
-$text-color:            #0C0E0C; // SMOKY BLACK
-$background-color:      #FFFFFF; // WHITE
+$text-color:            #000;
+$background-color:      #FFF;
 
-$brand-color:           #067BC2; // TEAL BLUE
-$complementary-color:   #F6E56D; // MELLOW YELLOW
+$brand-color:           $theme-blue; // TEAL BLUE
+$complementary-color:   $theme-yellow; // MELLOW YELLOW
 
-$code-color:            $text-color;
-$code-background-color: #E8E9E8; // PLATINUM
 
 // Width of the content area
 $spacing-unit:     30px;

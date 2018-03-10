@@ -15,16 +15,12 @@ description: >
 <div class="home">
   <ul class="post-list">
 
-    <p style="padding-bottom: 2em;">
-      Here are some materials about projects I've built
-    </p>
-
     {% for project in site.projects %}
     <li>
       <a class="post-link" href="{{ project.url | prepend: site.baseurl }}">
         {{ project.title }}
       </a>
-      {{ project.description }}
+      <p>{{ project.description }}</p>
     </li>
     {% endfor %}
   </div>

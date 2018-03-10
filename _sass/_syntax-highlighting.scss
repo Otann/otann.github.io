@@ -2,7 +2,8 @@
  * Syntax highlighting styles
  */
 
-$constant: #096D4C;
+$comment: #E8E9E8;
+$constant: #0DAB76;
 $string: $constant;
 $number: $constant;
 $symbol: $constant;
@@ -17,7 +18,7 @@ $function: #C55337;
       // background: #eef;
     }
 
-    .c     { color: $code-background-color; font-style: italic } // Comment
+    .c     { color: $comment; font-style: italic } // Comment
     .err   { color: #a61717 } // Error
     .k     { color: $function; font-weight: 500 } // Keyword
     .o     { color: $function; font-weight: 500 } // Operator
