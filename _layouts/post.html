@@ -13,10 +13,12 @@ layout: default
       {% if page.categories %}
         {% for category in page.categories limit:1 %}
         <h1 class="post-category" itemprop="name headline">{{ category | replace:'-',' ' }}</h1>
+        <br/>
         {% endfor %}
       {% endif %}
 
       <h1 class="post-title" itemprop="name headline">{{ page.title }}</h1>
+
       <p class="post-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%B %-d, %Y" }}</time>
         {% if page.author %}

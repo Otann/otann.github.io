@@ -3,9 +3,9 @@
 ---
 @charset "utf-8";
 @import "color-theme";
-@import url('https://fonts.googleapis.com/css?family=Fira+Mono:400,500|Lato:400,400i|Permanent+Marker');
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono|Lato');
 
-$header-font-family: "Permanent Marker", serif;
+$header-font-family: "Lato", serif;
 $base-font-family:   "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $code-font-family:   "Fira Mono", monospace;
 

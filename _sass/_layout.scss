@@ -22,15 +22,14 @@
 }
 
 .site-nav {
-  font-size: 1.8em;
+  font-size: 1.3em;
+  // font-style: italic;
   margin-top: .5em;
 
-  .page-link {
+  a.page-link {
     display: inline-block;
-    color: $text-color;
-    // line-height: $base-line-height;
-    line-height: .65em;
-    padding-bottom: .1em;
+    color: $theme-dark;
+    padding: .1em .25em;
 
     &.active {
       color: black;
@@ -145,9 +144,12 @@
     font-size: $small-font-size;
 }
 
-.post-link {
+a.post-link {
     // display: block;
     font-size: 1.1em;
+    padding: 0 .25em;
+    color: $text-color;
+    background-color: $complementary-color;
 }
 
 
@@ -186,8 +188,11 @@
       }
 
       h1 {
-        // background-color: $complementary-color;
-        color: $background-color;
+        display: inline-block;
+        background-color: $complementary-color;
+        padding: 0 .25em;
+        margin: .1em 0;
+        color: $text-color;
       }
 
       .post-meta {
@@ -220,13 +225,15 @@
 .post-content {
     margin-bottom: $spacing-unit;
 
-    h2 {
-        background-color: $complementary-color;
-        font-size: 2.5em;
+    h2, h3, h4 {
         display: inline-block;
-        padding-bottom: .1em;
-        line-height: .4em;
-        color: #1D2224;
+        background-color: $complementary-color;
+    }
+
+    h2 {
+        font-size: 2.3em;
+        padding: .25em .2em;
+        font-weight: bold;
 
         // @include media-query($on-laptop) {
         //     font-size: 28px;
@@ -234,20 +241,21 @@
     }
 
     h3 {
-        font-size: 1.8em;
-        font-weight: bold;
+        font-size: 1.75em;
+        padding: .15em .2em;
 
-        // @include media-query($on-laptop) {
-        //     font-size: 22px;
-        // }
+
+        @include media-query($on-laptop) {
+            font-size: 22px;
+        }
     }
 
     h4 {
         font-size: 1.2em;
 
-        // @include media-query($on-laptop) {
-        //     font-size: 18px;
-        // }
+        @include media-query($on-laptop) {
+            font-size: 18px;
+        }
     }
 
     img {
@@ -281,4 +289,14 @@
   }
   a.prev { float: left; }
   a.next { float: right; }
+}
+
+
+a.rss-subscribe {
+  background-color: $theme-dark;
+  color: white;
+  padding: .1em .4em;
+  font-weight: lighter;
+  text-decoration: none;
+
 }
