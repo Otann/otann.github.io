@@ -179,12 +179,16 @@ a.post-link {
     }
 
     &.with-image {
-      min-height: 20em;
+      min-height: 20rem;
+
+      @include media-query($on-palm) {
+        min-height: 15rem;
+      }
 
       .post-caption {
         position: absolute;
-        bottom: .8em;
-        left: 1em;
+        bottom: 0;
+        margin: 1rem 1rem;
       }
 
       h1 {
@@ -198,7 +202,8 @@ a.post-link {
       .post-meta {
         font-weight: bold;
         color: $background-color;
-        opacity: .75;
+        opacity: .85;
+        padding: .5rem 0 0 0;
       }
     }
 }

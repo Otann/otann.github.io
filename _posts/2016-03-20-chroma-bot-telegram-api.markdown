@@ -38,7 +38,7 @@ Start by adding `api.clj` file there with the following content. Let's do a name
 
 (def base-url "https://api.telegram.org/bot")
 
-(def token (atom nil))            
+(def token (atom nil))
 ```
 
 What is an atom? It's a box for data that changes over time, which you can use for state management. They are incredibly helpful when dealing with concurrent operations because they guarantee that no two threads will access their value at the same time. And they are very straightforward. There are only three things you can do with atoms:
@@ -91,7 +91,9 @@ If some of the keys will be omitted, then corresponding symbol inside method def
 Then there is `let` expression that declares some intermediary stuff:
 
 * `url (str base-url @token "/getUpdates")` declares a new symbol `url` that is string concatenation of `base-url`, Telegram token and method that we should use to get updates
+
 * `query` defines map with same values as method parameters but adds defaults if parameters are missing
+
 * `resp` is a result of calling (http/get ...) function that will make an HTTP request and return a map with the response from remote server. We also ask to interpret the response as JSON and, therefore, coerce it to standard Clojure map.
 
 What does the `->` arrow means? It is a handy way of writing multiple functions that call each other. Instead of this clumsy way for getting something deep from a map:
@@ -157,7 +159,7 @@ Create a file `polling.clj` in `telegram` namespace, where we are going to imple
 (ns telegram.polling
   "Declares long-polling routines to communicate with Telegram Bot API"
   (:require [clojure.core.async :refer [>!! <! go chan close! thread]]
-            [telegram.api :as api]            
+            [telegram.api :as api]
             [taoensso.timbre :as log]))
 ```
 
@@ -166,13 +168,19 @@ Now, let's talk about concurrency a little bit because there are no infinite loo
 I am not in the mood for taming threads manually today and would prefer a good abstraction for that matter. There are two major classes: [actors](https://en.wikipedia.org/wiki/Actor_model) and [communicating sequential processes](https://en.wikipedia.org/wiki/Communicating_sequential_processes). They both utilise an idea of passing messages between independent entities:
 
 * **Actors** are more OOP-like. You focus on actors, define their purpose of life (like class) and how they react to messages (like methods). And they also have a state, like instances.
+
   * **pro:** You can easily put different actors on different network nodes and scale in quantities since they process messages independently of each other
+
   * **con:** You have to keep an eye on message queues not to overflow, because processes of sending and receiving messages are not tied together.
+
   * **con:** Actors exchange messages with each other directly, so they are logically tightly coupled to each other because they have to keep in mind each other's roles.
 
 * **SCP** is functional-like approach. You focus on message queues. You define channel's role like you define a function, it should receive things of one sort and return the other.
+
   * **pro:** Emitters and receivers of messages knows only about message queue purpose, so they are loosely coupled together.
+
   * **con:** Often processes should wait for rendezvous to happen to continue their work. Putting or pulling messages will block execution until other side processes or provides a message. In that way, you don't have to worry about overflows of messages.
+
   * **con:**  That rendezvous could give you troubles on scaling your system physically.
 
 Since Clojure is a deeply functional language, it is no surprise that we would use SCP approach today. The library for that is `core.async`. Its main concept is *channel*. Imagine it as a virtual place where data flows from one end to another, like a conveyor belt or a queue. You put data to one side and pull from the other:
@@ -336,7 +344,7 @@ Add file `core.clj` to your `telegram` namespace:
 
 
 (defn init!
-  "Initializes Telegram cliend and starts all necessary routines"
+  "Initializes Telegram client and starts all necessary routines"
   [{:keys [token handlers polling]}]
   (if token
     (reset! api/token token)
@@ -344,7 +352,7 @@ Add file `core.clj` to your `telegram` namespace:
 
   (if (seq handlers) (h/reset-handlers! handlers))
   (if polling (polling/start!)))
-```  
+```
 
 Here we have single `init` function that ties everything we've done together:
 
@@ -442,7 +450,7 @@ Here is updated content of `main.clj`:
   (cfg/populate-from-env)
   (init)
   (log/info "Starting server")
-  (run-jetty app {:port (cfg/get :port) :join? false}))  
+  (run-jetty app {:port (cfg/get :port) :join? false}))
 ```
 
 * YES! Clojure can work with emojis! 👍
