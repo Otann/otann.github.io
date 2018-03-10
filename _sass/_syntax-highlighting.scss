@@ -2,13 +2,13 @@
  * Syntax highlighting styles
  */
 
-$comment: #E8E9E8;
+$comment:  #E8E9E8;
 $constant: #0DAB76;
+$keyword:  #067BC2;
+$function: #C55337;
 $string: $constant;
 $number: $constant;
 $symbol: $constant;
-$keyword: #067BC2;
-$function: #C55337;
 
 .highlight {
     // background: #fff;

@@ -11,7 +11,7 @@ order: 100
 
 I have substantial experience, which includes eight years of developing APIs for web applications and internal systems, which is supposed to sound extremely seriously, business-related and dull.
 
-I find that they often get too serious, and start asking about who will be the target audience or what is the business model and what not.
+I find that people often get too serious, and start asking about who will be the target audience or what is the business model of the project and what not.
 
 In this blog I hope to inspire people and encourage them to do more stunning and beautiful small projects for fun and not for profit.
 

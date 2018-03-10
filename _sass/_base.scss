@@ -4,8 +4,8 @@
 body, h1, h2, h3, h4, h5, h6,
 p, blockquote, pre, hr,
 dl, dd, ol, ul, figure {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 
@@ -14,18 +14,14 @@ dl, dd, ol, ul, figure {
  * Basic styling
  */
 body {
-    font: $base-font-weight $base-font-size $base-font-family;
-    line-height: 1.5em;
-    letter-spacing: 0.1px;
-    color: $text-color;
-    background-color: $background-color;
+  font: $base-font-weight $base-font-size $base-font-family;
+  color: $text-color;
+  background-color: $background-color;
 }
 
 b, strong {
   font-weight: $accent-body-weight;
 }
-
-
 
 /**
  * Set `margin-bottom` to maintain vertical rhythm
@@ -34,8 +30,23 @@ h1, h2, h3, h4, h5, h6,
 p, blockquote, pre,
 ul, ol, dl, figure,
 %vertical-rhythm {
-    margin-bottom: .5em;
+  margin-bottom: 1.5em;
 }
+
+/**
+ * Headings
+ */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: .5em;
+
+  font-weight: $base-font-weight;
+  font-family: $header-font-family;
+  a { text-decoration: none; }
+}
+
+/**
+ * Text
+ */
 
 
 
@@ -43,8 +54,8 @@ ul, ol, dl, figure,
  * Images
  */
 img {
-    max-width: 100%;
-    vertical-align: middle;
+  max-width: 100%;
+  vertical-align: middle;
 }
 
 
@@ -53,11 +64,11 @@ img {
  * Figures
  */
 figure > img {
-    display: block;
+  display: block;
 }
 
 figcaption {
-    font-size: $small-font-size;
+  font-size: $small-font-size;
 }
 
 
@@ -66,29 +77,14 @@ figcaption {
  * Lists
  */
 ul, ol {
-    margin-left: $spacing-unit;
+  margin-left: $spacing-unit;
 }
 
 li {
-  line-height: 1.7;
   > ul,
   > ol {
-       margin-bottom: 0;
+    margin-bottom: 0;
   }
-}
-
-
-
-/**
- * Headings
- */
-h1, h2, h3, h4, h5, h6 {
-  margin-top: .75em;
-  margin-bottom: .5em;
-  width: auto;
-  font-weight: $base-font-weight;
-  font-family: $header-font-family;
-  a { text-decoration: none; }
 }
 
 
@@ -99,8 +95,6 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: $brand-color;
   text-decoration: underline;
-  // text-decoration: none;
-  // font-weight: bold;
 
   &:visited {
     color: $brand-color;
@@ -146,12 +140,12 @@ blockquote {
  */
 pre,
 code {
-  margin: 1em 0;
+  margin: 2rem 0;
   font-family: $code-font-family;
   font-weight: normal;
   line-height: normal;
-  border: 1px solid $complementary-color;
-  border-radius: 4px;
+  border: 1px dashed $complementary-color;
+  border-radius: .2rem;
   background-color: $background-color;
   color: $text-color;
 }
@@ -167,8 +161,8 @@ code {
 }
 
 pre {
-  margin: 1em 0;
-  padding: 8px 12px;
+  @extend %vertical-rhythm;
+  padding: .5rem .8rem;
   overflow-x: auto;
 
   > code {

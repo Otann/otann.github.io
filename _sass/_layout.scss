@@ -231,18 +231,18 @@ a.post-link {
     }
 
     h2 {
-        font-size: 2.3em;
-        padding: .25em .2em;
+        font-size: 2.3rem;
+        padding: 0 .2em;
         font-weight: bold;
 
-        // @include media-query($on-laptop) {
-        //     font-size: 28px;
-        // }
+        @include media-query($on-laptop) {
+            font-size: 28px;
+        }
     }
 
     h3 {
-        font-size: 1.75em;
-        padding: .15em .2em;
+        font-size: 1.75rem;
+        padding: 0 .2em;
 
 
         @include media-query($on-laptop) {
@@ -251,7 +251,7 @@ a.post-link {
     }
 
     h4 {
-        font-size: 1.2em;
+        font-size: 1.2rem;
 
         @include media-query($on-laptop) {
             font-size: 18px;
@@ -275,7 +275,7 @@ a.post-link {
 
   .twitter {
     position: relative;
-    top: 7px;
+    top: 4px;
   }
 }
 
@@ -298,5 +298,4 @@ a.rss-subscribe {
   padding: .1em .4em;
   font-weight: lighter;
   text-decoration: none;
-
 }

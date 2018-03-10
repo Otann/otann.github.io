@@ -75,8 +75,11 @@ This template lays a fine file structure for you:
     6 directories, 5 files
 
 * `README.md` is a file that will describe your project and GitHub will render it nicely for you on the project page. I'm leaving this completely up to your imagination.
+
 * `resources` is for static resources of your application, like CSS styles for web pages or image assets
+
 * `src` hold your sources either in Clojure or ClojureScript
+
 * `test` is as you might guess, for unit tests
 
 Firstly, check out `handler.clj` file:
@@ -98,10 +101,13 @@ Firstly, check out `handler.clj` file:
 Here is one new concept that we haven't covered in previous post about Clojure &mdash; namespaces. It helps to divide code into logical blocks, like modules in Ruby or packages in Node. If you are familiar with those, this declaration should be intuitive for you:
 
 * `(ns chroma-bot.handler)` tells that this file contains namespace called **chroma-bot.handler**. It is considered a best practice if file structure duplicates namespace structure.
+
 * `:require` expression tells what to load from other namespaces and how to refer to those things:
 
   * `[namespace.foo :refer [a-function]]` will load `a-function` symbol, which we can use directly, like `wrap-defaults` from the code.
+
   * `[namespace.bar :as bar]` will load all symbols from `namespace.bar` and we will be able to refer to them with `bar/` prefix, like `route/not-found` from the example above.
+
   * You can also mix `:refer` and `:as` in a single require statement.
 
 That should give you a brief understanding of how to use namespaces. If you want to have a deeper understanding, try [this chapter](http://www.braveclojure.com/organization/) of Clojure for the Brave and True.
@@ -109,6 +115,7 @@ That should give you a brief understanding of how to use namespaces. If you want
 Now, what about the code?
 
 * `defroutes` defines routes ;) Seriously, it creates a structure that describes how to react for particular endpoints and gives it a name `app-routes`. There are two endpoints inside, *Hello world* response for root and *Not found* for everything else. That is certainly a very simple example, but look how elegant it looks!
+
 * `def app` defines new symbol, which is `app-routes` covered with middleware, which as [docs](https://github.com/ring-clojure/ring-defaults#basic-usage) says *"add support for parameters, cookies, sessions, static resources, file uploads, and a bunch of browser-specific security headers"*
 
 Here is how this code would look like in Node.js using Express.js:
@@ -164,7 +171,7 @@ Our primary interest here is `dependencies`. This should remind you of `Gemfile`
 :dependencies [[org.clojure/clojure "1.7.0"]
                [compojure "1.4.0"]
                [ring/ring-defaults "0.1.5"]]
-```               
+```
 
 After `:dependencies` keyword there is a vector that holds pairs of library names and versions.
 
@@ -185,10 +192,15 @@ Let's add some things here that we will need:
 ```
 
 * [`ring`](https://github.com/ring-clojure/ring) is an HTTP abstraction for Clojure. As the documentation says, it is *inspired by Python's WSGI and Ruby's Rack*. There is a server that runs, functions that processes requests and middleware that does jobs like logging errors or converting the request to various formats depending on the content-type header.
+
 * [`compojure`](https://github.com/weavejester/compojure) is a routing library that helps you tremendously to define functions in a modular way for different endpoints and compose them into single ring-compatible one.
+
 * [`hiccup`](https://github.com/weavejester/hiccup) is a library for HTML generation straight from the code, which we'll use for landing page.
+
 * [`core.async`](https://github.com/clojure/core.async) is a concurrency abstraction, based on the idea of channels, also known as [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes). It will help us to talk to Telegram API on a local machine using long-polling.
+
 * [`timbre`](https://github.com/ptaoussanis/timbre) is a gorgeous logging library, that beautifully renders exception and works perfectly for both server and client-side code. It will add some beauty to our printing of technical info to console.
+
 * [`omniconf`](https://github.com/grammarly/omniconf) is a fabulous library be Grammarly to manage a configuration of our application. It is capable of defining parameters, validating them for completeness, reading from file or environment. I encourage you to follow [12 factor](http://12factor.net/) principles and not store any configuration in your code.
 
 ## Make it pretty
