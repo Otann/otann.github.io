@@ -143,7 +143,6 @@
     padding-left: .5em;
     margin: 0;
     font-size: $small-font-size;
-    opacity: 85%;
 }
 
 .post-link {
@@ -192,8 +191,9 @@
       }
 
       .post-meta {
-        font-style: italic;
-        color: $text-color;
+        font-weight: bold;
+        color: $background-color;
+        opacity: .75;
       }
     }
 }
