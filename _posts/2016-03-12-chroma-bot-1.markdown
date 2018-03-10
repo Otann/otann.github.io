@@ -390,7 +390,7 @@ So my new app got a random name in this example &mdash; **young-citadel-23723**.
 Next step is to add `Procfile` to the root directory of your project with a single line:
 
 ```
-web: web: java $JVM_OPTS -jar target/chroma-bot.jar
+web: java $JVM_OPTS -jar target/chroma-bot.jar
 ```
 
 This tells Heroku how to run our app after it's built.
